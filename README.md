@@ -35,7 +35,7 @@ game ends;
 
 * you make choices by clicking on them, or else by typing the letter
 or number that appears before or within the thing you want to choose,
-or possibly even by typing in a few words;
+or possibly even by clicking on or typing in a few words;
 
 * you can always scroll back and review the full transcript of the
 game so far;
