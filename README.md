@@ -72,7 +72,7 @@ special;
 
 * looks nice -- decent fonts, proper dashes and quotes, enough white
 space to read by, works fine on tiny phones, maybe some illustrations
-and a soundtrack if you want them -- you know, the basics;
+or a soundtrack if you want them -- you know, the basics;
 
 * doesn't need a server or a network connection to play;
 
@@ -87,9 +87,9 @@ That is correct.  Unless I've forgotten to update this bit, obviously.
 
 ## So, um.  How can I put this gently.  Have you heard of a thing called Twine?
 
-[Sure.](http://twinery.org/)
+[Sure!](http://twinery.org/)
 
-## So... let me guess: you think Twine is terrible?
+## So... gah... let me guess: you think Twine is terrible?
 
 Not at all!  Twine is *fantastic*.
 [Have](http://indiegames.com/2013/07/browser_pick_ultra_business_ty.html)
