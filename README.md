@@ -2,7 +2,13 @@
 
 a tool for making browser-based interactive fiction
 
-## Hold on!  What is this "interactive fiction" of which you speak?
+## Is this even a real thing?
+
+No!  I haven't even properly started working on it yet, beyond this
+manifesto-thing.  I'll try to remember to update this bit once I
+do, though!
+
+## Slow down!  What even is this "interactive fiction" of which you speak?
 
 Like, in general?  That's just a fancy name people use for text
 adventure games for your computer, where you read a description of
@@ -20,9 +26,17 @@ things overlapping.  Sometimes people argue about it, or write
 dissertations about it, or whatever.  You know how people get
 sometimes.
 
+## But basically it's a 1980s nostalgia thing.
+
+Oh, no!  Well I mean maybe, partly?  People [still
+make](http://ifdb.tads.org/) games like this, is the thing.  Some
+of them are [really good](http://xyzzyawards.org/awards/historical.php)!
+And it's not just, like, refining the same thing, it's really evolved
+a lot, in several --
+
 ## Okay that's nice but what is this imbroglio thing for, specifically?
 
-Oh!  It's for making a particular style of game that *I* happen to
+Oh!  It's for making a particular style of game that I happen to
 want to make right now.  I mean maybe it'll turn out to be a *bit*
 more general, but I hope it won't get too general for its own good.
 
@@ -67,11 +81,9 @@ right there in the browser, start typing stuff and immediately see
 it working, even offline, save it to an `.html` file right on your
 computer, do whatever you want with it.
 
-## Ideas, huh?  I take it this thing doesn't actually exist yet?
+## But these are just ideas.  You haven't actually done any of this yet.
 
-Yes, that is 100% correct, at least as I write this.  It'll probably
-remain partially correct for quite some time, too.  I'll try to
-remember to remove this bit once it starts to feel real, though.
+That is correct.  Unless I've forgotten to update this bit, obviously.
 
 ## So, um.  How can I put this gently.  Have you heard of a thing called Twine?
 
