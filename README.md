@@ -28,11 +28,12 @@ sometimes.
 
 ## But basically it's a 1980s nostalgia thing.
 
-Oh, no!  Well I mean maybe, partly?  People [still
-make](http://ifdb.tads.org/) games like this, is the thing.  Some
-of them are [really good](http://xyzzyawards.org/awards/historical.php)!
-And it's not just all, like, rehashing the same aesthetic; it's
-evolved a lot, in several --
+Oh, no!  Well I mean maybe, partly?  [People](http://www.intfiction.org/)
+still make [this type of game](http://ifdb.tads.org/), is the thing.
+Some of them are [really
+good](http://xyzzyawards.org/awards/historical.php)!  And it's not
+just all, like, rehashing the same aesthetic; it's evolved a lot,
+in several --
 
 ## Okay that's nice but what is this imbroglio thing for, specifically?
 
