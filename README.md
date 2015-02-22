@@ -9,12 +9,15 @@ adventure games for your computer, where you read a description of
 what is happening and then maybe type stuff or click on stuff and
 read what happens next.  Like Infocom's Zork, back in the 1980s,
 when PCs were this new thing and were pretty much incapable of
-displaying pictures.  Choose Your Own Adventure books might be
-another good example from around the same era.  Or maybe those
-totally don't count at all, depending on who you ask!  Like didn't
-I just say computers?  It's not just one thing, it's like several
-related things overlapping.  Sometimes people argue about it, or
-write dissertations about it, or whatever.  You know how people get
+displaying pictures.
+
+Choose Your Own Adventure books might be another good example from
+around the same era.  Or maybe those totally don't count at all,
+depending on who you ask!  Like didn't I just say computers?
+
+It's not just one clear thing, it's like several related fuzzy
+things overlapping.  Sometimes people argue about it, or write
+dissertations about it, or whatever.  You know how people get
 sometimes.
 
 ## Okay that's nice but what is this imbroglio thing for, specifically?
