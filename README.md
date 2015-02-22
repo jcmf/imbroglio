@@ -24,33 +24,36 @@ more general, but I hope it won't get too general for its own good.
 
 Some of the basic ideas are:
 
-* lives on a web page, runs in a web browser;
+* you play a game by going to it in your web browser;
 
-* player reads a paragraph or three, followed by some multiple-choice
-style options; player chooses an option, gets some more text, and so on,
-until the game ends;
+* you read a paragraph or three, followed by some multiple-choice
+style options;
+
+* you choose an option, get some more text, and so on, until the
+game ends;
 
 * you make choices by clicking on them, or else by typing the letter
 or number that appears before or within the thing you want to choose,
-or possibly by typing in a few words;
+or possibly even by typing in a few words;
 
 * you can always scroll back and review the full transcript of the
 game so far;
 
 * while scrolling back you can change your mind and rewind the game
-to any given point and retroactively choose something else, pretty much just
-by clicking on it;
+to any given point and retroactively choose something else, changing
+history, pretty much just by clicking on it;
 
 * the page URL just ends with all the letters and/or numbers of all
 the choices you've made, which *completely* determine everything
 else you see in the game, so you can undo a rewind with the Back
-button, or use your browser history to go back to what you had an
-hour ago, or save by bookmarking, or send someone the URL so they
-can see the full transcript of what you did, or close your browser
-and pick up again later without having to jump through hoops;
+button, or save by bookmarking, or just use your browser history
+to go back to what you had an hour ago, or send someone the URL so
+they can read the full transcript of your story, or close your
+browser and pick up again later without having to do anything
+special;
 
 * looks nice -- decent fonts, real quotes, real dashes, enough white
-space to read by, works on tiny phones -- you know, the basics;
+space to read by, works fine on tiny phones -- you know, the basics;
 
 * doesn't need a server or a network connection to play;
 
@@ -62,8 +65,8 @@ computer, do whatever you want with it.
 ## Ideas, huh?  I take it this thing doesn't actually exist yet?
 
 Yes, that is 100% correct, at least as I write this.  It'll probably
-remain mostly correct for quite some time, too.  I'll try to remember
-to remove this bit when it stops being true, though.
+remain partially correct for quite some time, too.  I'll try to
+remember to remove this bit once it starts to feel real, though.
 
 ## So, um.  How can I put this gently.  Have you heard of a thing called Twine?
 
@@ -71,7 +74,16 @@ to remove this bit when it stops being true, though.
 
 ## So... let me guess: you think Twine is terrible?
 
-Not at all!  Twine is fantastic.
+Not at all!  Twine is *fantastic*.
+[Have](http://indiegames.com/2013/07/browser_pick_ultra_business_ty.html)
+[you](http://gamasutra.com/view/news/189558/IGF_winner_Hofmeier_pays_it_forward_for_Porpentines_Howling_Dogs.php)
+[seen](http://www.rockpapershotgun.com/2014/11/11/boo-the-uncle-who-works-at-nintendo/)
+[what](http://www.depressionquest.com/)
+[people](http://inurashii.xyz/twine-is-bad.html)
+[have](http://auntiepixelante.com/mythics/)
+[done](http://selectadecision.info/)
+[with](http://ohnoproblems.itch.io/sabbat-directors-kvt)
+[it](http://noncanon.com/HorseMaster.html)?  It's inspiring!
 
 ## Then I don't even have to explain why you're an idiot for even wanting to make this new thing that is strikingly similar to that existing established thing, because you already know that, right?
 
