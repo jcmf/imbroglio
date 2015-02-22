@@ -5,10 +5,10 @@ a tool for making browser-based interactive fiction
 ## Is this even a real thing?
 
 No!  I haven't even properly started working on it yet, beyond this
-manifesto-thing.  I'll try to remember to update this bit once I
-do, though!
+manifesto type screed you are reading.  I'll try to remember to
+update this bit once I do, though!
 
-## Slow down!  What even is this "interactive fiction" of which you speak?
+## Wait.  What even is this "interactive fiction" of which you speak?
 
 Like, in general?  That's just a fancy name people use for text
 adventure games for your computer, where you read a description of
@@ -31,8 +31,8 @@ sometimes.
 Oh, no!  Well I mean maybe, partly?  People [still
 make](http://ifdb.tads.org/) games like this, is the thing.  Some
 of them are [really good](http://xyzzyawards.org/awards/historical.php)!
-And it's not just, like, refining the same thing, it's really evolved
-a lot, in several --
+And it's not just all, like, rehashing the same aesthetic; it's
+really evolved a lot, in several --
 
 ## Okay that's nice but what is this imbroglio thing for, specifically?
 
@@ -87,7 +87,7 @@ That is correct.  Unless I've forgotten to update this bit, obviously.
 
 ## So, um.  How can I put this gently.  Have you heard of a thing called Twine?
 
-[Of course.](http://twinery.org/)
+[Sure.](http://twinery.org/)
 
 ## So... let me guess: you think Twine is terrible?
 
