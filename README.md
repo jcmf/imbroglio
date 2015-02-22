@@ -2,8 +2,7 @@
 
 a tool for making browser-based interactive fiction
 
-## Hold it right there, buster. What is this "interactive fiction"
-of which you speak?
+## Hold on!  What is this "interactive fiction" of which you speak?
 
 Like, in general?  That's just a fancy name people use for text
 adventure games for your computer, where you read a description of
@@ -66,8 +65,7 @@ Yes, that is 100% correct, at least as I write this.  It'll probably
 remain mostly correct for quite some time, too.  I'll try to remember
 to remove this bit when it stops being true, though.
 
-## So, um.  How can I put this gently.  Have you heard of a thing
-called Twine?
+## So, um.  How can I put this gently.  Have you heard of a thing called Twine?
 
 [Of course.](http://twinery.org/)
 
@@ -75,26 +73,19 @@ called Twine?
 
 Not at all!  Twine is fantastic.
 
-## Then I don't even have to explain why you're an idiot for even
-wanting to make this new thing that is strikingly similar to that
-existing established thing, because you already know that, right?
+## Then I don't even have to explain why you're an idiot for even wanting to make this new thing that is strikingly similar to that existing established thing, because you already know that, right?
 
 Yep!
 
-## Don't you feel bad, though, for making the world a worse place
-by trying to add yet another similar-but-worse thing instead of
-contributing to this existing good thing?
+## Don't you feel bad, though, for making the world a worse place by trying to add yet another similar-but-worse thing instead of contributing to this existing good thing?
 
 Nope.
 
-## Come on, man.  Work with me, here.  I'm just trying to understand
-where you're coming from.  Couldn't you just... what's the... where
-is the point in... why do you... why are... why?
+## Come on, man.  Work with me, here.  I'm just trying to understand where you're coming from.  Couldn't you just... what's the... where is the point in... why do you... why are... why?
 
 `*shrug*`
 
-## You're really not helping your case here.  Why would anyone even
-want to use your thing?
+## You're really not helping your case here.  Why would anyone even want to use your thing?
 
 Beats me.  People do weird things sometimes.
 
