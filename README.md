@@ -77,10 +77,10 @@ or a soundtrack if you want them -- you know, the basics;
 
 * doesn't need a server or a network connection to play;
 
-* creating a game is almost as easy as playing one -- do it right
-there in the browser, start typing stuff and immediately see it
-working, even offline, save it to an `.html` file right on your
-computer, do whatever you want with it.
+* creating a game is almost as easy as playing one: start typing
+text right there in the browser and immediately see it working,
+even offline, save it to a self-contained `.html` file right on
+your computer, email or upload or do whatever you want with it.
 
 ## But these are just ideas.  You haven't actually done any of this yet.
 
