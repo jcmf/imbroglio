@@ -83,7 +83,7 @@ Not at all!  Twine is *fantastic*.
 [have](http://auntiepixelante.com/mythics/)
 [done](http://selectadecision.info/)
 [with](http://ohnoproblems.itch.io/sabbat-directors-kvt)
-[it](http://noncanon.com/HorseMaster.html)?  It's inspiring!
+[it?](http://noncanon.com/HorseMaster.html)  It's really inspiring!
 
 ## Then I don't even have to explain why you're an idiot for even wanting to make this new thing that is strikingly similar to that existing established thing, because you already know that, right?
 
