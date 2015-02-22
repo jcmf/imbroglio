@@ -33,8 +33,8 @@ Some of the basic ideas are:
 * you read a paragraph or three, followed by some multiple-choice
 style options;
 
-* you choose an option, get some more text, and so on, until the
-game ends;
+* you choose an option, revealing some more text, and so on, until
+you reach an ending;
 
 * you make choices by clicking on them, or else by typing the letter
 or number that appears before or within the thing you want to choose,
