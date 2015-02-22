@@ -56,7 +56,7 @@ they can read the full transcript of your story, or close your
 browser and pick up again later without having to do anything
 special;
 
-* looks nice -- decent fonts, real quotes, real dashes, enough white
+* looks nice -- decent fonts, proper dashes and quotes, enough white
 space to read by, works fine on tiny phones, maybe some illustrations
 and a soundtrack if you want them -- you know, the basics;
 
