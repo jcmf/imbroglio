@@ -95,7 +95,7 @@ Nope.
 
 ## Come on, man.  Work with me, here.  I'm just trying to understand where you're coming from.  Couldn't you just... what's the... where is the point in... why do you... why are... why?
 
-*[shrug]*
+*shrug*
 
 ## You're really not helping your case here.  Why would anyone even want to use your thing?
 
