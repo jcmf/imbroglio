@@ -57,7 +57,8 @@ browser and pick up again later without having to do anything
 special;
 
 * looks nice -- decent fonts, real quotes, real dashes, enough white
-space to read by, works fine on tiny phones -- you know, the basics;
+space to read by, works fine on tiny phones, maybe some illustrations
+and a soundtrack if you want them -- you know, the basics;
 
 * doesn't need a server or a network connection to play;
 
