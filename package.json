@@ -4,7 +4,7 @@
   "description": "a tool for making browser-based interactive fiction",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "iced -c *.coffee*"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/jcmf/imbroglio/issues"
   },
-  "homepage": "https://github.com/jcmf/imbroglio"
+  "homepage": "https://github.com/jcmf/imbroglio",
+  "dependencies": {
+    "iced-coffee-script": "^1.8.0-d"
+  }
 }
