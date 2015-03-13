@@ -29,7 +29,7 @@
     "iced-coffee-script": "^1.8.0-d"
   },
   "devDependencies": {
-    "gribbl": "^1.2.1",
+    "gribbl": "^1.2.2",
     "jquery": "^2.1.3",
     "stylus": "^0.50.0"
   }
