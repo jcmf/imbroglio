@@ -10,7 +10,7 @@ Meh, sure, I guess we can do that somehow probably.
       textarea = $ '#textarea'
       textarea.on 'input', (e) ->
         src = textarea.val()
-        f = compile src
+        f = new Function compile src
         rendered = f()
         content.text rendered
         return

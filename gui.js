@@ -13,7 +13,7 @@
     return textarea.on('input', function(e) {
       var f, rendered, src;
       src = textarea.val();
-      f = compile(src);
+      f = new Function(compile(src));
       rendered = f();
       content.text(rendered);
     });

@@ -28,16 +28,16 @@
         return _results;
       })()).join('')) + "\"";
     };
-    return "function() { return " + (quote(src)) + "; }";
+    return "return " + (quote(src)) + ";";
   };
 
   exports.topLevelScript = function(src, options) {
-    var f;
+    var fbody;
     if (options == null) {
       options = {};
     }
-    f = exports.compile(src, options);
-    return "(function()\n{\n  var $ = require('jquery');\n  $(function()\n  {\n    f = " + f + "; \n    $('#content').text(f());\n  });\n})();";
+    fbody = exports.compile(src, options);
+    return "(function()\n{\n  var $ = require('jquery');\n  $(function()\n  {\n    f = function() { " + fbody + " };\n    $('#content').text(f());\n  });\n})();";
   };
 
   exports.htmlPage = function(src, options) {

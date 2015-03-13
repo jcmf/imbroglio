@@ -26,8 +26,8 @@ I'll add more later, but let me see if I can even get that much
 working.
 
 Actually let's start with something simpler!  How about a compiler
-that just compiles a function that returns the given text, as a
-string?
+that just compiles a function body that returns the given text, as
+a string?
 
     exports.compile = (src, options = {}) ->
       escape_char = (ch) ->
@@ -37,7 +37,7 @@ string?
           hex = "0#{hex}"
         "\\u#{hex}"
       quote = (s) -> "\"#{(escape_char ch for ch in src).join ''}\""
-      "function() { return #{quote src}; }";
+      "return #{quote src};";
 
 Okay, good.  Next layer up would be... hmm... something that produces
 a top-level script that could go in a web page, perhaps, and displays
@@ -46,14 +46,14 @@ I'll need more layers later, but right now that is a layer I need,
 so I can see what I'm doing.
 
     exports.topLevelScript = (src, options = {}) ->
-      f = exports.compile src, options
+      fbody = exports.compile src, options
       """
       (function()
       {
         var $ = require('jquery');
         $(function()
         {
-          f = #{f}; 
+          f = function() { #{fbody} };
           $('#content').text(f());
         });
       })();
