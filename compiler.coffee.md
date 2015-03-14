@@ -25,16 +25,11 @@ or other block-level elements to insert.
 I'll add more later, but let me see if I can even get that much
 working.
 
-Actually let's start with something simpler!  How about a compiler
-that just compiles a function body that returns the given text, as
-a DOM node or array thereof?  Something that jQuery can deal with?
+Here is a thing that escapes a character.  How do I deal with code
+points above 0xffff?  Does Javascript even believe in those?  I'm
+not going to worry about that quite yet.
+
+    quote = (s) -> "'#{s.replace /([\\'])/g, '\\$1'}'"
 
     exports.compile = (src, options = {}) ->
-      escape_char = (ch) ->
-        hex = ch.charCodeAt(0).toString 16
-        if hex.length > 4 then hex = 'fffd'
-        while hex.length < 4
-          hex = "0#{hex}"
-        "\\u#{hex}"
-      quote = (s) -> "\"#{(escape_char ch for ch in src).join ''}\""
       "return document.createTextNode(#{quote src});";
