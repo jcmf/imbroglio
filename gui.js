@@ -15,7 +15,8 @@
       src = textarea.val();
       f = new Function(compile(src));
       rendered = f();
-      content.text(rendered);
+      content.empty();
+      content.append(rendered);
     });
   });
 

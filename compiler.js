@@ -28,25 +28,7 @@
         return _results;
       })()).join('')) + "\"";
     };
-    return "return " + (quote(src)) + ";";
-  };
-
-  exports.topLevelScript = function(src, options) {
-    var fbody;
-    if (options == null) {
-      options = {};
-    }
-    fbody = exports.compile(src, options);
-    return "(function()\n{\n  var $ = require('jquery');\n  $(function()\n  {\n    f = function() { " + fbody + " };\n    $('#content').text(f());\n  });\n})();";
-  };
-
-  exports.htmlPage = function(src, options) {
-    var script;
-    if (options == null) {
-      options = {};
-    }
-    script = exports.topLevelScript(src, options);
-    return "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <script>" + script + "</script>\n  </head>\n  <body><div id=\"content\"></div></body>\n</html>";
+    return "return document.createTextNode(" + (quote(src)) + ");";
   };
 
 }).call(this);

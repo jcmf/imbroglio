@@ -12,7 +12,8 @@ Meh, sure, I guess we can do that somehow probably.
         src = textarea.val()
         f = new Function compile src
         rendered = f()
-        content.text rendered
+        content.empty()
+        content.append rendered
         return
 
 And now just include this script from an HTML page with gribbl.
