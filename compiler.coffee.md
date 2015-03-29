@@ -25,26 +25,59 @@ or other block-level elements to insert.
 I'll add more later, but let me see if I can even get that much
 working.
 
-    exports.quote = quote = (s) ->
+    quote = (s) ->
       s = s
       .replace /([\\'])/g, '\\$1'
       .replace /\n/g, '\\n'
       .replace /\r/g, '\\r'
       return "'#{s}'"
 
-    parseOutIn = (re, text, mkOutList, mkInItem) ->
-      idx = 0
-      result = []
-      while m = re.exec text
-        result.push item for item in mkOutList text.substring idx, m.index
-        idx = re.lastIndex
-        result.push mkInItem m
-      result.push item for item in mkOutList text.substring idx
-      return result
+    {CoffeeScript} = require 'coffee-script'
+    {Scope} = require 'coffee-script/lib/coffee-script/scope'
+    nodes = require 'coffee-script/lib/coffee-script/nodes'
 
-    parseText = (text) -> ["_text(#{quote text})"]
+    class Element
+      constructor: (@tag, @attrs = {}, @children...) ->
 
-    exports.compile = compile = (src, opts = {}) ->
+    class Compiler
+      constructor: ->
+        @referencedVars = []
+        @scope = new Scope null, null, null, @referencedVars
+      refTokens: (tokens) ->
+        assert not @tmpUsed
+        for token in tokens
+          if token.variable
+            @referencedVars.push token[1]
+        return
+      lit: (x) -> new nodes.Literal x
+      val: (x, props...) -> new nodes.Value x, props
+      litval: (x) -> @val @lit x
+      assign: (k, v) -> new nodes.Assign k, v
+      field: (lit, field) -> @val lit, new nodes.Access @lit field
+      string: (s) -> @litval quote s
+      call: (fn, args...) -> new nodes.Call fn, args
+      callname: (name, args...) -> @call @litval(name), args...
+      block: (children) -> new nodes.Block children
+      tmp: (name) ->
+        @tmpUsed = yes
+        @lit @scope.freeVariable name
+      text: (s) -> @callname 'document.createTextNode', @string s
+      elem: (tag, attrs = {}, children...) ->
+        tmp = @tmp tag
+        code = [@assign tmp, @callname 'document.createElement', @string tag]
+        for k, v of attrs
+          code.push @call @field(tmp, 'setAttribute'), @string(k), @string(v)
+        for child in children
+          code.push @call @field(tmp, 'appendChild'), @expand child
+        code.push @val tmp
+        return @block code
+      expand: (child) ->
+        if child not instanceof Element then return child
+        @elem child.tag, child.attrs, child.children
+      main: (result) -> @scope.expressions = @block [new nodes.Return result]
+
+    exports.parse = parse = (src, opts = {}) ->
+      compiler = new Compiler()
       codeBegin = '#{'
       codeEnd = '}'
       pp = for p in src.split /\n\s*\n/
@@ -54,7 +87,7 @@ working.
         for XXX in [0..99] # loop
           found = p.indexOf codeBegin, idx
           if found < 0 then found = p.length
-          pieces.push piece for piece in parseText p.substring idx, found
+          pieces.push compiler.text p.substring idx, found
           if found == p.length then break
           start = found + codeBegin.length
           end = start - 1
@@ -66,33 +99,29 @@ working.
               break
             code = p.substring start, end
             try
-              js = require('iced-coffee-script').compile code
+              tokens = CoffeeScript.tokens code
+              ast = CoffeeScript.nodes tokens
             catch e
               error = e
               continue
             error = null
-            pieces.push js.replace /;\s*$/, ''
+            compiler.addTokens tokens
+            pieces.push ast
             idx = end + codeEnd.length
             break
           if error
-            pieces.push "_tag('span', {'class': 'error'}, _text(#{quote codeBegin}))"
+            pieces.push new Element 'span', {class: 'error'}, compiler.text codeBegin
             idx = start
-        "_tag('p', {}, #{pieces.join ', '})"
-      "return [#{pp.join ', '}];"
+        new Element 'p', {}, pieces
+      return compiler.main compiler.elem 'div', {class: 'passage'}, pp...
 
-    exports._tag = _tag = (name, attrs = {}, children...) ->
-      result = document.createElement name
-      for k, v of attrs
-        result.setAttribute k, v
-      for child in children
-        result.appendChild child
-      return result
+    exports.compile = compile = (src, opts) ->
+      ast = parse src, opts
+      # To get a source map, I'll need to use ast.compileToFragments().
+      # look at what CoffeeScript.compile() is doing....
+      return ast.compile()
 
-    exports._text = _text = (text) -> document.createTextNode text
+    exports.prepare = prepare = (src, opts) -> new Function compile src, opts
 
-    exports.prepare = prepare = (src, opts) ->
-      new Function('_tag', '_text', compile src, opts).bind null, _tag, _text
-
-    exports.render = render = (src, opts) ->
-      prepare(src, opts)()
+    exports.render = render = (src, opts) -> prepare(src, opts)()
 
