@@ -4,15 +4,17 @@ re-rendering the text in it as it changes, using the compiler module?
 Meh, sure, I guess we can do that somehow probably.
 
     $ = require 'jquery'
-    {render} = require './compiler'
+    {compile, render} = require './compiler'
     $ ->
-      content = $ '#content'
-      textarea = $ '#textarea'
-      textarea.on 'input', (e) ->
-        src = textarea.val()
+      $code = $ '#code'
+      $content = $ '#content'
+      $textarea = $ '#textarea'
+      $textarea.on 'input', (e) ->
+        src = $textarea.val()
+        $code.text compile src
         rendered = render src
-        content.empty()
-        content.append rendered
+        $content.empty()
+        $content.append rendered
         return
 
 And now just include this script from an HTML page with gribbl.
