@@ -25,11 +25,32 @@ or other block-level elements to insert.
 I'll add more later, but let me see if I can even get that much
 working.
 
-Here is a thing that escapes a character.  How do I deal with code
-points above 0xffff?  Does Javascript even believe in those?  I'm
-not going to worry about that quite yet.
+    exports.quote = quote = (s) ->
+      s = s
+      .replace /([\\'])/g, '\\$1'
+      .replace /\n/g, '\\n'
+      .replace /\r/g, '\\r'
+      return "'#{s}'"
 
-    quote = (s) -> "'#{s.replace /([\\'])/g, '\\$1'}'"
+    exports.compile = compile = (src, opts = {}) ->
+      pp = for p in src.split /\n\s*\n/
+        if not /\S/.test p then continue
+        "_tag('p', {}, _text(#{quote p}))"
+      "return [#{pp.join ', '}];"
 
-    exports.compile = (src, options = {}) ->
-      "return document.createTextNode(#{quote src});";
+    exports._tag = _tag = (name, attrs = {}, children...) ->
+      result = document.createElement name
+      for k, v of attrs
+        result.setAttribute k, v
+      for child in children
+        result.appendChild child
+      return result
+
+    exports._text = _text = (text) -> document.createTextNode text
+
+    exports.prepare = prepare = (src, opts) ->
+      new Function('_tag', '_text', compile src, opts).bind null, _tag, _text
+
+    exports.render = render = (src, opts) ->
+      prepare(src, opts)()
+

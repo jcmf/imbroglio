@@ -4,14 +4,13 @@ re-rendering the text in it as it changes, using the compiler module?
 Meh, sure, I guess we can do that somehow probably.
 
     $ = require 'jquery'
-    {compile} = require './compiler'
+    {render} = require './compiler'
     $ ->
       content = $ '#content'
       textarea = $ '#textarea'
       textarea.on 'input', (e) ->
         src = textarea.val()
-        f = new Function compile src
-        rendered = f()
+        rendered = render src
         content.empty()
         content.append rendered
         return
