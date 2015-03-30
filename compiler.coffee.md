@@ -80,7 +80,7 @@ working.
         @elem child.tag, child.attrs, child.children...
       main: (result) ->
         @scope.expressions = @block [new nodes.Return result]
-        return scope: @scope, ast: @scope.expressions, level: 1
+        return scope: @scope, ast: @scope.expressions, level: 1, indent: ''
 
     exports.parse = parse = (src, opts = {}) ->
       compiler = new Compiler()
@@ -125,8 +125,8 @@ working.
       o = parse src, opts
       # To get a source map, I'll need to use ast.compileToFragments().
       # look at what CoffeeScript.compile() is doing....
-      return o.ast.compile o
-      #return o.ast.compileWithDeclarations o
+      fragments = o.ast.compileWithDeclarations o
+      (fragment.code for fragment in fragments).join ''
 
     exports.prepare = prepare = (src, opts) -> new Function compile src, opts
 

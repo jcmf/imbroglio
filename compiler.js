@@ -133,7 +133,8 @@
       return {
         scope: this.scope,
         ast: this.scope.expressions,
-        level: 1
+        level: 1,
+        indent: ''
       };
     };
 
@@ -214,9 +215,18 @@
   };
 
   exports.compile = compile = function(src, opts) {
-    var o;
+    var fragment, fragments, o;
     o = parse(src, opts);
-    return o.ast.compile(o);
+    fragments = o.ast.compileWithDeclarations(o);
+    return ((function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = fragments.length; _i < _len; _i++) {
+        fragment = fragments[_i];
+        _results.push(fragment.code);
+      }
+      return _results;
+    })()).join('');
   };
 
   exports.prepare = prepare = function(src, opts) {
