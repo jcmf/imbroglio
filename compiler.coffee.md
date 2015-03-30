@@ -32,6 +32,7 @@ working.
       .replace /\r/g, '\\r'
       return "'#{s}'"
 
+    assert = require 'assert'
     {CoffeeScript} = require 'coffee-script'
     {Scope} = require 'coffee-script/lib/coffee-script/scope'
     nodes = require 'coffee-script/lib/coffee-script/nodes'
@@ -52,10 +53,13 @@ working.
       lit: (x) -> new nodes.Literal x
       val: (x, props...) -> new nodes.Value x, props
       litval: (x) -> @val @lit x
-      assign: (k, v) -> new nodes.Assign k, v
+      assign: (k, v) -> new nodes.Assign @val(k), v
       field: (lit, field) -> @val lit, new nodes.Access @lit field
       string: (s) -> @litval quote s
-      call: (fn, args...) -> new nodes.Call fn, args
+      call: (fn, args...) ->
+        for arg in args
+          assert arg.compileToFragments
+        new nodes.Call fn, args
       callname: (name, args...) -> @call @litval(name), args...
       block: (children) -> new nodes.Block children
       tmp: (name) ->
@@ -70,11 +74,13 @@ working.
         for child in children
           code.push @call @field(tmp, 'appendChild'), @expand child
         code.push @val tmp
-        return @block code
+        return @val @block code
       expand: (child) ->
         if child not instanceof Element then return child
-        @elem child.tag, child.attrs, child.children
-      main: (result) -> @scope.expressions = @block [new nodes.Return result]
+        @elem child.tag, child.attrs, child.children...
+      main: (result) ->
+        @scope.expressions = @block [new nodes.Return result]
+        return scope: @scope, ast: @scope.expressions, level: 1
 
     exports.parse = parse = (src, opts = {}) ->
       compiler = new Compiler()
@@ -105,21 +111,22 @@ working.
               error = e
               continue
             error = null
-            compiler.addTokens tokens
+            compiler.refTokens tokens
             pieces.push ast
             idx = end + codeEnd.length
             break
           if error
             pieces.push new Element 'span', {class: 'error'}, compiler.text codeBegin
             idx = start
-        new Element 'p', {}, pieces
+        new Element 'p', {}, pieces...
       return compiler.main compiler.elem 'div', {class: 'passage'}, pp...
 
     exports.compile = compile = (src, opts) ->
-      ast = parse src, opts
+      o = parse src, opts
       # To get a source map, I'll need to use ast.compileToFragments().
       # look at what CoffeeScript.compile() is doing....
-      return ast.compile()
+      return o.ast.compile o
+      #return o.ast.compileWithDeclarations o
 
     exports.prepare = prepare = (src, opts) -> new Function compile src, opts
 
