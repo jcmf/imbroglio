@@ -4,7 +4,10 @@
   "description": "a tool for making browser-based interactive fiction",
   "main": "index.js",
   "scripts": {
-    "prepublish": "iced -c *.coffee* && gribbl index.jade"
+    "prepublish": "iced -c *.coffee* && gribbl *.jade"
+  },
+  "browserify": {
+    "transform": ["brfs"]
   },
   "repository": {
     "type": "git",
@@ -26,6 +29,7 @@
   },
   "homepage": "https://github.com/jcmf/imbroglio",
   "devDependencies": {
+    "brfs": "^1.4.0",
     "gribbl": "^1.2.2",
     "iced-coffee-script": "^1.8.0-d",
     "jquery": "^2.1.3",

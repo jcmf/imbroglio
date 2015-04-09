@@ -1,0 +1,12 @@
+#start
+
+This is the first passage in the game.  From here you could go
+[[left->left]] or [[right->right]].
+
+#left
+
+You went left!  There isn't much here.
+
+#right
+
+You went right!  Wow, this is boring.

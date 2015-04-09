@@ -1,6 +1,8 @@
 choiceChars = '0123456789abcdefghijklmnopqrstuvwxyz'
 
 error = (msg) -> throw new Error msg
+assert = require 'assert'
+$ = require 'jquery'
 
 mkText = (s) -> window.document.createTextNode s
 mkElem = (tag, children = [], attrs = {}) ->
@@ -9,12 +11,12 @@ mkElem = (tag, children = [], attrs = {}) ->
   result.appendChild child for child in children when child
   result
 
-newGame = do ->
+firstTurn = do ->
   src = require('fs').readFileSync "#{__dirname}/game.txt", 'utf8'
   passages = {}
   firstPassage = null
   do ->
-    re = /(?:^|\n\n)#\s+([^\n]*\S)\n/g
+    re = /(?:^\s*\n?|\n\n)#\s*([^\n]*\S)\s*\n/g
     lastPassage = null
     while m = re.exec src
       if lastPassage then lastPassage.endIndex = m.index
@@ -22,116 +24,138 @@ newGame = do ->
       assert lastPassage.name not of passages, lastPassage.name
       passages[lastPassage.name] = lastPassage
       firstPassage or= lastPassage
+    if not lastPassage then error 'no passages found'
     lastPassage.endIndex = src.length
+    return
   do ->
+    console.log "XXX firstPassage.name=#{firstPassage.name}"
     for k, v of passages then do ->
       v.src = src.substring v.startIndex, v.endIndex
+      console.log "XXX passages[#{k}].src=#{v.src}"
       re = /\[\[([^\]]*)\]\]|(\n\n)/g
-#      index = 0
-#      v.pp = pp = [p = []]
-#      linkCount = 0
-#      while m = re.exec v.src do ->
-#        if m.index != index
-#          p.push
-#            text: v.src.substring index, m.index
-#            startIndex: v.startIndex + index
-#            endIndex: v.startIndex + m.index
-#        index = re.lastIndex
-#        if m[2]
-#          pp.push p = []
-#          continue
-#        link = m[1]
-#        offset = v.startIndex + m.index
-#        if not lm = /(.*)->([^\s<>]+)/.exec link
-#          error "malformed link [[#{link}]], passage #{k}, offset #{offset}"
-#        if linkCount >= choiceChars.length
-#          error "too many links, passage #{k}, offset #{offset}"
-#        if m[2] not of passages
-#          error "bad link target #{m[2]}, passage #{k}, offset #{offset}"
-#        p.push {
-#          text: m[1]
-#          target: m[2]
-#          choiceChar: choiceChars[linkCount++]
-#          startIndex: v.startIndex + m.index
-#          endIndex: v.startIndex + index
-#        }
-#      if index != v.src.length
-#        p.push
-#          text: v.src.substring index
-#          startIndex: v.startIndex + index
-#          endIndex: v.startIndex + v.src.length
-#      if not p.length then pp.pop()
-#      if not pp.length then error "empty passage #{k}, offset #{v.startIndex}"
-#  render = (passage, attrs = {}) ->
-#    moves = attrs.moves or= ''
-#    links = {}
-#    children = do -> for p in passage.pp
-#      grandchildren = for item in p
-#        gchild = mkText item.text
-#        if item.target
-#          gchild = mkElem 'a', grandchild,
-#            href: "#{moves}#{item.choiceChar}"
-#            class: 'choice'
-#          assert item.choiceChar
-#          assert not links[item.choiceChar]
-#          links[item.choiceChar] =
-#            el: gchild
-#            target: item.target
-#        gchild
-#      mkElem 'p', grandchildren
-#    attrs.passageElem = mkElem 'div', children, class: 'passage'
-#    attrs.choose = (ch) ->
-#      if not link = links[ch]
-#        console.log "invalid move #{ch} from passage #{passage.name}"
-#        return null
-#      render passages[link.target], moves: "#{moves}#{ch}", chosenElem: link.el
-#  return -> render firstPassage
+      index = 0
+      v.pp = pp = [p = []]
+      linkCount = 0
+      while m = re.exec v.src then do ->
+        if m.index != index
+          p.push
+            text: v.src.substring index, m.index
+            startIndex: v.startIndex + index
+            endIndex: v.startIndex + m.index
+        index = re.lastIndex
+        if m[2]
+          pp.push p = []
+          return  # continue while loop
+        link = m[1]
+        offset = v.startIndex + m.index
+        if not lm = /(.*)->([^\s<>]+)/.exec link
+          error "malformed link [[#{link}]], passage #{k}, offset #{offset}"
+        if linkCount >= choiceChars.length
+          error "too many links, passage #{k}, offset #{offset}"
+        if lm[2] not of passages
+          error "bad link target #{lm[2]}, passage #{k}, offset #{offset}"
+        p.push {
+          text: lm[1]
+          target: lm[2]
+          choiceChar: choiceChars[linkCount++]
+          startIndex: v.startIndex + m.index
+          endIndex: v.startIndex + index
+        }
+        return
+      if index != v.src.length
+        p.push
+          text: v.src.substring index
+          startIndex: v.startIndex + index
+          endIndex: v.startIndex + v.src.length
+      if not p.length then pp.pop()
+      if not pp.length then error "empty passage #{k}, offset #{v.startIndex}"
+    return
+  render = (passage, attrs = {}) ->
+    moves = attrs.moves or= ''
+    links = {}
+    children = do -> for p in passage.pp
+      grandchildren = for item in p
+        gchild = mkText item.text
+        if item.target
+          gchild = mkElem 'a', [gchild],
+            href: "#!#{moves}#{item.choiceChar}"
+            class: 'choice'
+          assert item.choiceChar
+          assert not links[item.choiceChar]
+          links[item.choiceChar] =
+            el: gchild
+            target: item.target
+        gchild
+      mkElem 'p', grandchildren
+    attrs.passageElem = mkElem 'div', children, class: 'passage'
+    attrs.choose = (ch) ->
+      if not link = links[ch]
+        console.log "invalid move #{ch} from passage #{passage.name}"
+        return null
+      render passages[link.target], moves: "#{moves}#{ch}", chosenElem: link.el
+    return attrs
+  return -> render firstPassage
 
-game = null
+turn = null
 
 restore = (moves) ->
-  if game?.moves is moves then return
+  if turn?.moves is moves then return
   $('#loading').show()
   $('.pane').hide()
   $('#game').hide()
   $output = $('#output')
-  if not game
-    game = newGame()
+  if not turn
+    turn = firstTurn()
     $output.empty()
+    $output.append turn.passageElem
   else
     last = ->
       children = $output.children()
       if children.length then $ children.get children.length-1 else children
-    while game.moves != moves[...game.moves.length]
+    while turn.moves != moves[...turn.moves.length]
       last().remove()
+      turn = turn.prevTurn
     last().find('.chosen').removeClass 'chosen'
-  for ch in moves[game.moves.length...]
-    if not game = game.choose ch
+  for ch in moves[turn.moves.length...]
+    prevTurn = turn
+    if not turn = turn.choose ch
       $('#404-pane').show()
       $('#loading').hide()
       return
-    $(game.chosenElem).addClass 'chosen'
-    $output.append game.passageElem
+    turn.prevTurn = prevTurn
+    $(turn.chosenElem).addClass 'chosen'
+    $output.append turn.passageElem
   $('#game').show()
   $('#loading').hide()
-  $p = $ game.passageElem
+  $p = $ turn.passageElem
   window.scrollTo 0, $p.offset().top - $p.css 'margin-top'
+  return
 
 hashchange = ->
   hash = window.location.hash.replace /^#/, ''
-  return restore hash m[1] if m = /^!(.*)$/.exec hash
-  game = target = null
-  if m = /^\/([a-z][a-z-]*)$/.exec hash then target = $("##{m[1]}-pane")
+  console.log "XXX hashchange hash=#{hash}"
+  if m = /^!(.*)$/.exec hash then return restore m[1]
+  turn = target = null
+  if m = /^\/([a-z][a-z-]*)$/.exec hash then target = $ "##{m[1]}-pane"
+  console.log "XXX target=#{target}"
   if not target?.length then target = $('#home')
+  console.log "XXX target=#{target}"
   $('#game').hide()
   $('#output').empty()
   $('.pane').hide()
   target.show()
+  $('#loading').hide()
   window.scrollTo 0, 0
+  return
 
 $ ->
+  do ->
+    m = /([^\/]+)$/.exec window.location?.pathname or ''
+    if m then $('a[href="#"], a[href="#/"]').attr 'href', m[1]
+    return
   $(window).on 'hashchange', (e) ->
     e.preventDefault()
     hashchange()
     true
   hashchange()
+  return
