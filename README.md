@@ -4,9 +4,17 @@ a tool for making browser-based interactive fiction
 
 ## Is this even a real thing?
 
-No!  I haven't even properly started working on it yet, beyond this
-manifesto type screed you are reading.  I'll try to remember to
-update this bit once I do, though!
+In theory, kinda?  It's starting to get to the point where it might
+be usable for something, though it's still a far cry from what I
+would like it to be.
+
+In practice: Not really, no.  Not yet, anyway.  It's still much
+much too difficult to use to justify its palty feature set, and
+there's no documentation.
+
+What's going on is that I signed up to do ShuffleComp: Disc Two and
+I'm scrambling to get my entry done using the bits I've been able
+to slap together so far.
 
 ## Wait.  What even is this "interactive fiction" of which you speak?
 
@@ -82,9 +90,13 @@ text right there in the browser and immediately see it working,
 even offline, save it to a self-contained `.html` file right on
 your computer, email or upload or do whatever you want with it.
 
-## But these are just ideas.  You haven't actually done any of this yet.
+## And have you done any of those things?
 
-That is correct.  Unless I've forgotten to update this bit, obviously.
+Some, yes, with the most notable exception being the part where
+creating a game is supposed to be easy -- right now it's basically
+impossible unless you're extremely determined, and it involves
+mucking around with node command-line tools, rather than typing
+text into a web browser.  I hope to improve this, of course.
 
 ## So, um.  How can I put this gently.  Have you heard of a thing called Twine?
 

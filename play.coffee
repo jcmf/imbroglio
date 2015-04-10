@@ -11,8 +11,7 @@ mkElem = (tag, children = [], attrs = {}) ->
   result.appendChild child for child in children when child
   result
 
-firstTurn = do ->
-  src = require('fs').readFileSync "#{__dirname}/game.txt", 'utf8'
+compile = (src) ->
   passages = {}
   firstPassage = null
   do ->
@@ -28,10 +27,8 @@ firstTurn = do ->
     lastPassage.endIndex = src.length
     return
   do ->
-    console.log "XXX firstPassage.name=#{firstPassage.name}"
     for k, v of passages then do ->
       v.src = src.substring v.startIndex, v.endIndex
-      console.log "XXX passages[#{k}].src=#{v.src}"
       re = /\[\[([^\]]*)\]\]|(\n\n)/g
       index = 0
       v.pp = pp = [p = []]
@@ -96,7 +93,7 @@ firstTurn = do ->
     return attrs
   return -> render firstPassage
 
-turn = null
+newGame = turn = null
 
 restore = (moves) ->
   if turn?.moves is moves then return
@@ -105,7 +102,7 @@ restore = (moves) ->
   $('#game').hide()
   $output = $('#output')
   if not turn
-    turn = firstTurn()
+    turn = newGame()
     $output.empty()
     $output.append turn.passageElem
   else
@@ -133,13 +130,10 @@ restore = (moves) ->
 
 hashchange = ->
   hash = window.location.hash.replace /^#/, ''
-  console.log "XXX hashchange hash=#{hash}"
   if m = /^!(.*)$/.exec hash then return restore m[1]
   turn = target = null
   if m = /^\/([a-z][a-z-]*)$/.exec hash then target = $ "##{m[1]}-pane"
-  console.log "XXX target=#{target}"
   if not target?.length then target = $('#home')
-  console.log "XXX target=#{target}"
   $('#game').hide()
   $('#output').empty()
   $('.pane').hide()
@@ -148,14 +142,16 @@ hashchange = ->
   window.scrollTo 0, 0
   return
 
-$ ->
-  do ->
-    m = /([^\/]+)$/.exec window.location?.pathname or ''
-    if m then $('a[href="#"], a[href="#/"]').attr 'href', m[1]
-    return
-  $(window).on 'hashchange', (e) ->
-    e.preventDefault()
+exports.play = (src) ->
+  newGame = compile src
+  $ ->
+    do ->
+      m = /([^\/]+)$/.exec window.location?.pathname or ''
+      if m then $('a[href="#"], a[href="#/"]').attr 'href', m[1]
+      return
+    $(window).on 'hashchange', (e) ->
+      e.preventDefault()
+      hashchange()
+      true
     hashchange()
-    true
-  hashchange()
-  return
+    return
