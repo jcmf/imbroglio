@@ -1,13 +1,15 @@
 {
   "name": "imbroglio",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "a tool for making browser-based interactive fiction",
   "main": "index.js",
   "scripts": {
     "prepublish": "iced -c *.coffee* && gribbl *.jade"
   },
   "browserify": {
-    "transform": ["brfs"]
+    "transform": [
+      "brfs"
+    ]
   },
   "repository": {
     "type": "git",
