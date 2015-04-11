@@ -1,12 +1,12 @@
 #start
 
 This is the first passage in the game.  From here you could go
-[[left->left]] or [[right->right]].
+[[left]] or [[right->To the Right]].
 
 #left
 
 You went left!  There isn't much here.
 
-#right
+# To the Right
 
-You went right!  Wow, this is boring.
+You went right!  Wow, this is boring.  Go [[start<-back]] maybe?

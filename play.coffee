@@ -43,17 +43,21 @@ exports.compile = compile = (src) ->
         if m[2]
           pp.push p = []
           return  # continue while loop
-        link = m[1]
+        text = target = link = m[1]
         offset = v.startIndex + m.index
-        if not lm = /(.*)->([^\s<>]+)/.exec link
-          error "malformed link [[#{link}]], passage #{k}, offset #{offset}"
         if linkCount >= choiceChars.length
-          error "too many links, passage #{k}, offset #{offset}"
-        if lm[2] not of passages
-          error "bad link target #{lm[2]}, passage #{k}, offset #{offset}"
+          error "too many links at [[#{link}]], passage #{k}, offset #{offset}"
+        if lm = /^(.*)->\s*([^<>]*[^\s<>])\s*$/.exec link
+          text = lm[1]
+          target = lm[2]
+        else if lm = /^\s*([^<>]*[^\s<>])\s*<-(.*)$/.exec link
+          target = lm[1]
+          text = lm[2]
+        if target not of passages
+          error "bad link target '#{target}' at [[#{link}]], passage #{k}, offset #{offset}"
         p.push {
-          text: lm[1]
-          target: lm[2]
+          text
+          target
           choiceChar: choiceChars[linkCount++]
           startIndex: v.startIndex + m.index
           endIndex: v.startIndex + index

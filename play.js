@@ -74,7 +74,7 @@
         linkCount = 0;
         while (m = re.exec(v.src)) {
           (function() {
-            var link, lm, offset;
+            var link, lm, offset, target, text;
             if (m.index !== index) {
               p.push({
                 text: v.src.substring(index, m.index),
@@ -87,20 +87,24 @@
               pp.push(p = []);
               return;
             }
-            link = m[1];
+            text = target = link = m[1];
             offset = v.startIndex + m.index;
-            if (!(lm = /(.*)->([^\s<>]+)/.exec(link))) {
-              error("malformed link [[" + link + "]], passage " + k + ", offset " + offset);
-            }
             if (linkCount >= choiceChars.length) {
-              error("too many links, passage " + k + ", offset " + offset);
+              error("too many links at [[" + link + "]], passage " + k + ", offset " + offset);
             }
-            if (!(lm[2] in passages)) {
-              error("bad link target " + lm[2] + ", passage " + k + ", offset " + offset);
+            if (lm = /^(.*)->\s*([^<>]*[^\s<>])\s*$/.exec(link)) {
+              text = lm[1];
+              target = lm[2];
+            } else if (lm = /^\s*([^<>]*[^\s<>])\s*<-(.*)$/.exec(link)) {
+              target = lm[1];
+              text = lm[2];
+            }
+            if (!(target in passages)) {
+              error("bad link target '" + target + "' at [[" + link + "]], passage " + k + ", offset " + offset);
             }
             p.push({
-              text: lm[1],
-              target: lm[2],
+              text: text,
+              target: target,
               choiceChar: choiceChars[linkCount++],
               startIndex: v.startIndex + m.index,
               endIndex: v.startIndex + index
