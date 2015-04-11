@@ -11,7 +11,7 @@ mkElem = (tag, children = [], attrs = {}) ->
   result.appendChild child for child in children when child
   result
 
-compile = (src) ->
+exports.compile = compile = (src) ->
   passages = {}
   firstPassage = null
   do ->

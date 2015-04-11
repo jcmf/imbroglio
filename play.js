@@ -38,7 +38,7 @@
     return result;
   };
 
-  compile = function(src) {
+  exports.compile = compile = function(src) {
     var firstPassage, passages, render;
     passages = {};
     firstPassage = null;
