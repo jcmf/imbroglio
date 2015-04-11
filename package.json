@@ -31,13 +31,13 @@
   },
   "homepage": "https://github.com/jcmf/imbroglio",
   "devDependencies": {
-    "brfs": "^1.4.0",
     "gribbl": "^1.2.2",
     "iced-coffee-script": "^1.8.0-d",
     "jquery": "^2.1.3",
     "stylus": "^0.50.0"
   },
   "dependencies": {
+    "brfs": "^1.4.0",
     "coffee-script": "1.9.1"
   }
 }
