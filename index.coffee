@@ -1,1 +1,1 @@
-exports.play = require('./play').play
+exports.play = require './play'

@@ -142,7 +142,7 @@ hashchange = ->
   window.scrollTo 0, 0
   return
 
-exports.play = (src) ->
+exports.start = (src) ->
   newGame = compile src
   $ ->
     do ->

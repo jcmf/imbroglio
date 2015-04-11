@@ -257,7 +257,7 @@
     window.scrollTo(0, 0);
   };
 
-  exports.play = function(src) {
+  exports.start = function(src) {
     newGame = compile(src);
     return $(function() {
       (function() {
