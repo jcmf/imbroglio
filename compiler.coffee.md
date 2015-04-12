@@ -137,8 +137,11 @@ working.
     exports.prepare = prepare = (src, opts) ->
       code = compile src, opts
       varNames = if not opts.vars then [] else (k for k of opts.vars)
-      if not varNames.length then return new Function code
-      return new Function(varNames..., code).bind null, (opts.vars[k] for k in varNames)...
+      argNames = varNames.concat opts.argNames or []
+      f = new Function argNames..., code
+      if varNames.length
+        f = f.bind null, (opts.vars[k] for k in varNames)...
+      return f
 
     exports.render = render = (src, opts) -> prepare(src, opts)()
 

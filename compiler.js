@@ -252,7 +252,7 @@
   };
 
   exports.prepare = prepare = function(src, opts) {
-    var code, k, varNames, _ref;
+    var argNames, code, f, k, varNames;
     code = compile(src, opts);
     varNames = !opts.vars ? [] : (function() {
       var _results;
@@ -262,22 +262,24 @@
       }
       return _results;
     })();
-    if (!varNames.length) {
-      return new Function(code);
-    }
-    return (_ref = (function(func, args, ctor) {
+    argNames = varNames.concat(opts.argNames || []);
+    f = (function(func, args, ctor) {
       ctor.prototype = func.prototype;
       var child = new ctor, result = func.apply(child, args);
       return Object(result) === result ? result : child;
-    })(Function, __slice.call(varNames).concat([code]), function(){})).bind.apply(_ref, [null].concat(__slice.call((function() {
-      var _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = varNames.length; _i < _len; _i++) {
-        k = varNames[_i];
-        _results.push(opts.vars[k]);
-      }
-      return _results;
-    })())));
+    })(Function, __slice.call(argNames).concat([code]), function(){});
+    if (varNames.length) {
+      f = f.bind.apply(f, [null].concat(__slice.call((function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = varNames.length; _i < _len; _i++) {
+          k = varNames[_i];
+          _results.push(opts.vars[k]);
+        }
+        return _results;
+      })())));
+    }
+    return f;
   };
 
   exports.render = render = function(src, opts) {

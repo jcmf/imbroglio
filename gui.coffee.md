@@ -4,7 +4,7 @@ re-rendering the text in it as it changes, using the compiler module?
 Meh, sure, I guess we can do that somehow probably.
 
     $ = require 'jquery'
-    {parse, compile, render} = require './compiler'
+    {parse, compile, prepare} = require './compiler'
     $ ->
       $code = $ '#code'
       $content = $ '#content'
@@ -12,11 +12,15 @@ Meh, sure, I guess we can do that somehow probably.
       $thisVar = $ '#thisVar'
       recompute = ->
         src = $textarea.val()
-        opts = thisVar: $thisVar.val(), vars: text: (t) -> document.createTextNode t
+        opts =
+          argNames: ['arg']
+          thisVar: $thisVar.val()
+          vars: text: (t) -> document.createTextNode t
         $('#ast').text parse(src, opts).ast
         $code.text compile src, opts
         opts.handleError = (e) -> console.log e
-        rendered = render src, opts
+        prepared = prepare src, opts
+        rendered = prepared 'GUI-ARG'
         $content.empty()
         $content.append rendered
         return
