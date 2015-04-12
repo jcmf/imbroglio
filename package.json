@@ -1,6 +1,6 @@
 {
   "name": "imbroglio",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "a tool for making browser-based interactive fiction",
   "main": "index.js",
   "scripts": {
