@@ -33,7 +33,7 @@ working.
       return "'#{s}'"
 
     assert = require 'assert'
-    {CoffeeScript} = require 'coffee-script'
+    CoffeeScript = require 'coffee-script'
     {Scope} = require 'coffee-script/lib/coffee-script/scope'
     nodes = require 'coffee-script/lib/coffee-script/nodes'
 
@@ -116,7 +116,8 @@ working.
             idx = end + codeEnd.length
             break
           if error
-            pieces.push new Element 'span', {class: 'error'}, compiler.text codeBegin
+            if opts.handleError then opts.handleError {error}
+            pieces.push new Element 'span', {class: 'error', title: error.toString()}, compiler.text codeBegin
             idx = start
         new Element 'p', {}, pieces...
       return compiler.main compiler.elem 'div', {class: 'passage'}, pp...

@@ -11,7 +11,7 @@
 
   assert = require('assert');
 
-  CoffeeScript = require('coffee-script').CoffeeScript;
+  CoffeeScript = require('coffee-script');
 
   Scope = require('coffee-script/lib/coffee-script/scope').Scope;
 
@@ -196,8 +196,14 @@
             break;
           }
           if (error) {
+            if (opts.handleError) {
+              opts.handleError({
+                error: error
+              });
+            }
             pieces.push(new Element('span', {
-              "class": 'error'
+              "class": 'error',
+              title: error.toString()
             }, compiler.text(codeBegin)));
             idx = start;
           }
@@ -258,7 +264,11 @@
       var rendered, src;
       src = $textarea.val();
       $('#ast').text(parse(src).ast);
-      $code.text(compile(src));
+      $code.text(compile(src, {
+        handleError: function(e) {
+          return console.log(e);
+        }
+      }));
       rendered = render(src);
       $content.empty();
       $content.append(rendered);

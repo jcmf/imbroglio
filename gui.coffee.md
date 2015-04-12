@@ -12,7 +12,7 @@ Meh, sure, I guess we can do that somehow probably.
       $textarea.on 'input', (e) ->
         src = $textarea.val()
         $('#ast').text parse(src).ast
-        $code.text compile src
+        $code.text compile src, handleError: (e) -> console.log e
         rendered = render src
         $content.empty()
         $content.append rendered

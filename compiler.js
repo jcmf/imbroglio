@@ -10,7 +10,7 @@
 
   assert = require('assert');
 
-  CoffeeScript = require('coffee-script').CoffeeScript;
+  CoffeeScript = require('coffee-script');
 
   Scope = require('coffee-script/lib/coffee-script/scope').Scope;
 
@@ -195,8 +195,14 @@
             break;
           }
           if (error) {
+            if (opts.handleError) {
+              opts.handleError({
+                error: error
+              });
+            }
             pieces.push(new Element('span', {
-              "class": 'error'
+              "class": 'error',
+              title: error.toString()
             }, compiler.text(codeBegin)));
             idx = start;
           }
