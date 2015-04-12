@@ -252,7 +252,32 @@
   };
 
   exports.prepare = prepare = function(src, opts) {
-    return new Function(compile(src, opts));
+    var code, k, varNames, _ref;
+    code = compile(src, opts);
+    varNames = !opts.vars ? [] : (function() {
+      var _results;
+      _results = [];
+      for (k in opts.vars) {
+        _results.push(k);
+      }
+      return _results;
+    })();
+    if (!varNames.length) {
+      return new Function(code);
+    }
+    return (_ref = (function(func, args, ctor) {
+      ctor.prototype = func.prototype;
+      var child = new ctor, result = func.apply(child, args);
+      return Object(result) === result ? result : child;
+    })(Function, __slice.call(varNames).concat([code]), function(){})).bind.apply(_ref, [null].concat(__slice.call((function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = varNames.length; _i < _len; _i++) {
+        k = varNames[_i];
+        _results.push(opts.vars[k]);
+      }
+      return _results;
+    })())));
   };
 
   exports.render = render = function(src, opts) {

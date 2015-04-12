@@ -16,7 +16,12 @@
       var opts, rendered, src;
       src = $textarea.val();
       opts = {
-        thisVar: $thisVar.val()
+        thisVar: $thisVar.val(),
+        vars: {
+          text: function(t) {
+            return document.createTextNode(t);
+          }
+        }
       };
       $('#ast').text(parse(src, opts).ast);
       $code.text(compile(src, opts));

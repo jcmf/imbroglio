@@ -12,7 +12,7 @@ Meh, sure, I guess we can do that somehow probably.
       $thisVar = $ '#thisVar'
       recompute = ->
         src = $textarea.val()
-        opts = thisVar: $thisVar.val()
+        opts = thisVar: $thisVar.val(), vars: text: (t) -> document.createTextNode t
         $('#ast').text parse(src, opts).ast
         $code.text compile src, opts
         opts.handleError = (e) -> console.log e

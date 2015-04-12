@@ -134,7 +134,11 @@ working.
       fragments = o.ast.compileWithDeclarations o
       (fragment.code for fragment in fragments).join ''
 
-    exports.prepare = prepare = (src, opts) -> new Function compile src, opts
+    exports.prepare = prepare = (src, opts) ->
+      code = compile src, opts
+      varNames = if not opts.vars then [] else (k for k of opts.vars)
+      if not varNames.length then return new Function code
+      return new Function(varNames..., code).bind null, (opts.vars[k] for k in varNames)...
 
     exports.render = render = (src, opts) -> prepare(src, opts)()
 
