@@ -7,23 +7,28 @@
   _ref = require('./compiler'), parse = _ref.parse, compile = _ref.compile, render = _ref.render;
 
   $(function() {
-    var $code, $content, $textarea;
+    var $code, $content, $textarea, $thisVar, recompute;
     $code = $('#code');
     $content = $('#content');
     $textarea = $('#textarea');
-    return $textarea.on('input', function(e) {
-      var rendered, src;
+    $thisVar = $('#thisVar');
+    recompute = function() {
+      var opts, rendered, src;
       src = $textarea.val();
-      $('#ast').text(parse(src).ast);
-      $code.text(compile(src, {
-        handleError: function(e) {
-          return console.log(e);
-        }
-      }));
-      rendered = render(src);
+      opts = {
+        thisVar: $thisVar.val()
+      };
+      $('#ast').text(parse(src, opts).ast);
+      $code.text(compile(src, opts));
+      opts.handleError = function(e) {
+        return console.log(e);
+      };
+      rendered = render(src, opts);
       $content.empty();
       $content.append(rendered);
-    });
+    };
+    $textarea.on('input', recompute);
+    return $thisVar.on('input', recompute);
   });
 
 }).call(this);

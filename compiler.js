@@ -30,7 +30,8 @@
   })();
 
   Compiler = (function() {
-    function Compiler() {
+    function Compiler(opts) {
+      this.opts = opts;
       this.referencedVars = [];
       this.scope = new Scope(null, null, null, this.referencedVars);
     }
@@ -92,6 +93,21 @@
       return new nodes.Block(children);
     };
 
+    Compiler.prototype.ret = function(result) {
+      return new nodes.Return(result);
+    };
+
+    Compiler.prototype.blockret = function(result) {
+      return this.block([this.ret(result)]);
+    };
+
+    Compiler.prototype.wrap = function(ast) {
+      if (!this.opts.thisVar) {
+        return ast;
+      }
+      return this.blockret(this.call(this.field(new nodes.Parens(this.block([new nodes.Code([], ast)])), 'call'), this.litval(this.opts.thisVar)));
+    };
+
     Compiler.prototype.tmp = function(name) {
       this.tmpUsed = true;
       return this.lit(this.scope.freeVariable(name));
@@ -129,7 +145,7 @@
     };
 
     Compiler.prototype.main = function(result) {
-      this.scope.expressions = this.block([new nodes.Return(result)]);
+      this.scope.expressions = this.wrap(this.blockret(result));
       return {
         scope: this.scope,
         ast: this.scope.expressions,
@@ -147,7 +163,7 @@
     if (opts == null) {
       opts = {};
     }
-    compiler = new Compiler();
+    compiler = new Compiler(opts);
     codeBegin = '#{';
     codeEnd = '}';
     pp = (function() {

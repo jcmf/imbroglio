@@ -9,14 +9,19 @@ Meh, sure, I guess we can do that somehow probably.
       $code = $ '#code'
       $content = $ '#content'
       $textarea = $ '#textarea'
-      $textarea.on 'input', (e) ->
+      $thisVar = $ '#thisVar'
+      recompute = ->
         src = $textarea.val()
-        $('#ast').text parse(src).ast
-        $code.text compile src, handleError: (e) -> console.log e
-        rendered = render src
+        opts = thisVar: $thisVar.val()
+        $('#ast').text parse(src, opts).ast
+        $code.text compile src, opts
+        opts.handleError = (e) -> console.log e
+        rendered = render src, opts
         $content.empty()
         $content.append rendered
         return
+      $textarea.on 'input', recompute
+      $thisVar.on 'input', recompute
 
 And now just include this script from an HTML page with gribbl.
 Yes, that sounds plausible.

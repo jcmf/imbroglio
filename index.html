@@ -31,7 +31,8 @@
   })();
 
   Compiler = (function() {
-    function Compiler() {
+    function Compiler(opts) {
+      this.opts = opts;
       this.referencedVars = [];
       this.scope = new Scope(null, null, null, this.referencedVars);
     }
@@ -93,6 +94,21 @@
       return new nodes.Block(children);
     };
 
+    Compiler.prototype.ret = function(result) {
+      return new nodes.Return(result);
+    };
+
+    Compiler.prototype.blockret = function(result) {
+      return this.block([this.ret(result)]);
+    };
+
+    Compiler.prototype.wrap = function(ast) {
+      if (!this.opts.thisVar) {
+        return ast;
+      }
+      return this.blockret(this.call(this.field(new nodes.Parens(this.block([new nodes.Code([], ast)])), 'call'), this.litval(this.opts.thisVar)));
+    };
+
     Compiler.prototype.tmp = function(name) {
       this.tmpUsed = true;
       return this.lit(this.scope.freeVariable(name));
@@ -130,7 +146,7 @@
     };
 
     Compiler.prototype.main = function(result) {
-      this.scope.expressions = this.block([new nodes.Return(result)]);
+      this.scope.expressions = this.wrap(this.blockret(result));
       return {
         scope: this.scope,
         ast: this.scope.expressions,
@@ -148,7 +164,7 @@
     if (opts == null) {
       opts = {};
     }
-    compiler = new Compiler();
+    compiler = new Compiler(opts);
     codeBegin = '#{';
     codeEnd = '}';
     pp = (function() {
@@ -256,23 +272,28 @@
   _ref = require('./compiler'), parse = _ref.parse, compile = _ref.compile, render = _ref.render;
 
   $(function() {
-    var $code, $content, $textarea;
+    var $code, $content, $textarea, $thisVar, recompute;
     $code = $('#code');
     $content = $('#content');
     $textarea = $('#textarea');
-    return $textarea.on('input', function(e) {
-      var rendered, src;
+    $thisVar = $('#thisVar');
+    recompute = function() {
+      var opts, rendered, src;
       src = $textarea.val();
-      $('#ast').text(parse(src).ast);
-      $code.text(compile(src, {
-        handleError: function(e) {
-          return console.log(e);
-        }
-      }));
-      rendered = render(src);
+      opts = {
+        thisVar: $thisVar.val()
+      };
+      $('#ast').text(parse(src, opts).ast);
+      $code.text(compile(src, opts));
+      opts.handleError = function(e) {
+        return console.log(e);
+      };
+      rendered = render(src, opts);
       $content.empty();
       $content.append(rendered);
-    });
+    };
+    $textarea.on('input', recompute);
+    return $thisVar.on('input', recompute);
   });
 
 }).call(this);
@@ -17442,4 +17463,4 @@ return jQuery;
 .error {
   color: #f00;
 }
-</style></head><body><pre id="ast"></pre><pre id="code"></pre><div id="content"></div><textarea id="textarea"></textarea></body></html>
+</style></head><body><pre id="ast"></pre><pre id="code"></pre><div id="content"></div><textarea id="textarea"></textarea><input id="thisVar" type="text"></body></html>

@@ -41,7 +41,7 @@ working.
       constructor: (@tag, @attrs = {}, @children...) ->
 
     class Compiler
-      constructor: ->
+      constructor: (@opts) ->
         @referencedVars = []
         @scope = new Scope null, null, null, @referencedVars
       refTokens: (tokens) ->
@@ -62,6 +62,11 @@ working.
         new nodes.Call fn, args
       callname: (name, args...) -> @call @litval(name), args...
       block: (children) -> new nodes.Block children
+      ret: (result) -> new nodes.Return result
+      blockret: (result) -> @block [@ret result]
+      wrap: (ast) ->
+        if not @opts.thisVar then return ast
+        @blockret @call(@field(new nodes.Parens(@block [new nodes.Code([], ast)]), 'call'), @litval @opts.thisVar)
       tmp: (name) ->
         @tmpUsed = yes
         @lit @scope.freeVariable name
@@ -79,11 +84,11 @@ working.
         if child not instanceof Element then return child
         @elem child.tag, child.attrs, child.children...
       main: (result) ->
-        @scope.expressions = @block [new nodes.Return result]
+        @scope.expressions = @wrap @blockret result
         return scope: @scope, ast: @scope.expressions, level: 1, indent: ''
 
     exports.parse = parse = (src, opts = {}) ->
-      compiler = new Compiler()
+      compiler = new Compiler opts
       codeBegin = '#{'
       codeEnd = '}'
       pp = for p in src.split /\n\s*\n/
