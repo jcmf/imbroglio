@@ -4,7 +4,7 @@ re-rendering the text in it as it changes, using the compiler module?
 Meh, sure, I guess we can do that somehow probably.
 
     $ = require 'jquery'
-    {parse, compile, prepare} = require './compiler'
+    {parse, compile, prepare, stdlib} = require './compiler'
     $ ->
       $code = $ '#code'
       $content = $ '#content'
@@ -15,7 +15,7 @@ Meh, sure, I guess we can do that somehow probably.
         opts =
           argNames: ['arg']
           thisVar: $thisVar.val()
-          vars: text: (t) -> document.createTextNode t
+          vars: imbroglio: stdlib()
         $('#ast').text parse(src, opts).ast
         $code.text compile src, opts
         opts.handleError = (e) -> console.log e

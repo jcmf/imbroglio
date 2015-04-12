@@ -32,18 +32,35 @@ working.
       .replace /\r/g, '\\r'
       return "'#{s}'"
 
+    exports.stdlib = (imbroglio = {}) ->
+      imbroglio.elem or= (tag, attrs = {}, children...) ->
+        result = window.document.createElement tag
+        result.setAttribute k, v for k, v of attrs
+        addChild = (child) ->
+          if not child? or child is '' then return
+          if child instanceof Array
+            addChild c for c in child
+            return
+          if not child.cloneNode
+            child = window.document.createTextNode "#{child}"
+          result.appendChild child
+          return
+        addChild child for child in children
+        result
+      imbroglio
+
     assert = require 'assert'
     CoffeeScript = require 'coffee-script'
     {Scope} = require 'coffee-script/lib/coffee-script/scope'
     nodes = require 'coffee-script/lib/coffee-script/nodes'
 
-    class Element
+    class Element # XXX remove
       constructor: (@tag, @attrs = {}, @children...) ->
 
     class Compiler
       constructor: (@opts) ->
         @referencedVars = []
-        @scope = new Scope null, null, null, @referencedVars
+        @scope = new Scope null, null, null, @referencedVars  # XXX remove
       refTokens: (tokens) ->
         assert not @tmpUsed
         for token in tokens
@@ -67,20 +84,18 @@ working.
       wrap: (ast) ->
         if not @opts.thisVar then return ast
         @blockret @call(@field(new nodes.Parens(@block [new nodes.Code([], ast)]), 'call'), @litval @opts.thisVar)
-      tmp: (name) ->
+      tmp: (name) -> # XXX remove
         @tmpUsed = yes
         @lit @scope.freeVariable name
-      text: (s) -> @callname 'document.createTextNode', @string s
+      text: (s) -> @string s
+      obj: (obj) ->
+        attrs = for k, v of obj
+          assert 'string' is typeof v, v
+          new nodes.Assign @string(k), @string(v), 'object'
+        @val new nodes.Obj attrs
       elem: (tag, attrs = {}, children...) ->
-        tmp = @tmp tag
-        code = [@assign tmp, @callname 'document.createElement', @string tag]
-        for k, v of attrs
-          code.push @call @field(tmp, 'setAttribute'), @string(k), @string(v)
-        for child in children
-          code.push @call @field(tmp, 'appendChild'), @expand child
-        code.push @val tmp
-        return @val @block code
-      expand: (child) ->
+        @callname 'imbroglio.elem', @string(tag), @obj(attrs), children...
+      expand: (child) -> # XXX remove
         if child not instanceof Element then return child
         @elem child.tag, child.attrs, child.children...
       main: (result) ->
@@ -95,7 +110,7 @@ working.
         if not /\S/.test p then continue
         pieces = []
         idx = 0
-        for XXX in [0..99] # loop
+        loop
           found = p.indexOf codeBegin, idx
           if found < 0 then found = p.length
           pieces.push compiler.text p.substring idx, found
@@ -103,7 +118,7 @@ working.
           start = found + codeBegin.length
           end = start - 1
           error = true
-          for YYY in [0..99] # loop
+          loop
             end = p.indexOf codeEnd, end + 1
             if end < 0
               idx = p.length
@@ -122,15 +137,15 @@ working.
             break
           if error
             if opts.handleError then opts.handleError {error}
-            pieces.push new Element 'span', {class: 'error', title: error.toString()}, compiler.text codeBegin
+            pieces.push compiler.elem 'span', {class: 'error', title: error.toString()}, compiler.text codeBegin
             idx = start
-        new Element 'p', {}, pieces...
+        compiler.elem 'p', {}, pieces...
       return compiler.main compiler.elem 'div', {class: 'passage'}, pp...
 
     exports.compile = compile = (src, opts) ->
       o = parse src, opts
       # To get a source map, I'll need to use ast.compileToFragments().
-      # look at what CoffeeScript.compile() is doing....
+      # Look at what CoffeeScript.compile() is doing....
       fragments = o.ast.compileWithDeclarations o
       (fragment.code for fragment in fragments).join ''
 

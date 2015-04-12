@@ -3,7 +3,7 @@ choiceChars = 'abcdefghijklmnopqrstuvwxyz0123456789'
 error = (msg) -> throw new Error msg
 assert = require 'assert'
 $ = require 'jquery'
-{quote, prepare} = require './compiler'
+{quote, stdlib, prepare} = require './compiler'
 
 mkText = (s) -> window.document.createTextNode s
 mkElem = (tag, children = [], attrs = {}) ->
@@ -41,10 +41,10 @@ exports.compile = compile = (src) ->
           text = m[2]
         if target not of passages
           error "bad link target '#{target}' at #{outer}, passage #{k}, offset #{offset}"
-        "#\{_imbroglio.mkLink #{quote target}, #{quote text}}"
+        "#\{imbroglio.mkLink #{quote target}, #{quote text}}"
       v.prepared = prepare v.mungedSrc, {
-        argNames: ['_imbroglio']
-        thisVar: '_imbroglio.state'
+        argNames: ['imbroglio']
+        thisVar: 'imbroglio.state'
         handleError: (e) ->
           console.log e
           if e.error instanceof Error then throw e.error
@@ -67,7 +67,7 @@ exports.compile = compile = (src) ->
       links[choiceChar] = {el, target}
       return el
     state = JSON.parse result.stateJSON or '{}'
-    result.passageElem = passage.prepared _imbroglio = {mkLink, state}
+    result.passageElem = passage.prepared stdlib {mkLink, state}
     stateJSON = result.stateJSON = JSON.stringify state
     result.choose = (ch) ->
       if not link = links[ch]

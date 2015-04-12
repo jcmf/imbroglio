@@ -8,6 +8,47 @@
     return "'" + s + "'";
   };
 
+  exports.stdlib = function(imbroglio) {
+    if (imbroglio == null) {
+      imbroglio = {};
+    }
+    imbroglio.elem || (imbroglio.elem = function() {
+      var addChild, attrs, child, children, k, result, tag, v, _i, _len;
+      tag = arguments[0], attrs = arguments[1], children = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+      if (attrs == null) {
+        attrs = {};
+      }
+      result = window.document.createElement(tag);
+      for (k in attrs) {
+        v = attrs[k];
+        result.setAttribute(k, v);
+      }
+      addChild = function(child) {
+        var c, _i, _len;
+        if ((child == null) || child === '') {
+          return;
+        }
+        if (child instanceof Array) {
+          for (_i = 0, _len = child.length; _i < _len; _i++) {
+            c = child[_i];
+            addChild(c);
+          }
+          return;
+        }
+        if (!child.cloneNode) {
+          child = window.document.createTextNode("" + child);
+        }
+        result.appendChild(child);
+      };
+      for (_i = 0, _len = children.length; _i < _len; _i++) {
+        child = children[_i];
+        addChild(child);
+      }
+      return result;
+    });
+    return imbroglio;
+  };
+
   assert = require('assert');
 
   CoffeeScript = require('coffee-script');
@@ -114,27 +155,31 @@
     };
 
     Compiler.prototype.text = function(s) {
-      return this.callname('document.createTextNode', this.string(s));
+      return this.string(s);
+    };
+
+    Compiler.prototype.obj = function(obj) {
+      var attrs, k, v;
+      attrs = (function() {
+        var _results;
+        _results = [];
+        for (k in obj) {
+          v = obj[k];
+          assert('string' === typeof v, v);
+          _results.push(new nodes.Assign(this.string(k), this.string(v), 'object'));
+        }
+        return _results;
+      }).call(this);
+      return this.val(new nodes.Obj(attrs));
     };
 
     Compiler.prototype.elem = function() {
-      var attrs, child, children, code, k, tag, tmp, v, _i, _len;
+      var attrs, children, tag;
       tag = arguments[0], attrs = arguments[1], children = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
       if (attrs == null) {
         attrs = {};
       }
-      tmp = this.tmp(tag);
-      code = [this.assign(tmp, this.callname('document.createElement', this.string(tag)))];
-      for (k in attrs) {
-        v = attrs[k];
-        code.push(this.call(this.field(tmp, 'setAttribute'), this.string(k), this.string(v)));
-      }
-      for (_i = 0, _len = children.length; _i < _len; _i++) {
-        child = children[_i];
-        code.push(this.call(this.field(tmp, 'appendChild'), this.expand(child)));
-      }
-      code.push(this.val(tmp));
-      return this.val(this.block(code));
+      return this.callname.apply(this, ['imbroglio.elem', this.string(tag), this.obj(attrs)].concat(__slice.call(children)));
     };
 
     Compiler.prototype.expand = function(child) {
@@ -159,7 +204,7 @@
   })();
 
   exports.parse = parse = function(src, opts) {
-    var XXX, YYY, ast, code, codeBegin, codeEnd, compiler, e, end, error, found, idx, p, pieces, pp, start, tokens;
+    var ast, code, codeBegin, codeEnd, compiler, e, end, error, found, idx, p, pieces, pp, start, tokens;
     if (opts == null) {
       opts = {};
     }
@@ -167,7 +212,7 @@
     codeBegin = '#{';
     codeEnd = '}';
     pp = (function() {
-      var _i, _j, _k, _len, _ref, _results;
+      var _i, _len, _ref, _results;
       _ref = src.split(/\n\s*\n/);
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -177,7 +222,7 @@
         }
         pieces = [];
         idx = 0;
-        for (XXX = _j = 0; _j <= 99; XXX = ++_j) {
+        while (true) {
           found = p.indexOf(codeBegin, idx);
           if (found < 0) {
             found = p.length;
@@ -189,7 +234,7 @@
           start = found + codeBegin.length;
           end = start - 1;
           error = true;
-          for (YYY = _k = 0; _k <= 99; YYY = ++_k) {
+          while (true) {
             end = p.indexOf(codeEnd, end + 1);
             if (end < 0) {
               idx = p.length;
@@ -216,18 +261,14 @@
                 error: error
               });
             }
-            pieces.push(new Element('span', {
+            pieces.push(compiler.elem('span', {
               "class": 'error',
               title: error.toString()
             }, compiler.text(codeBegin)));
             idx = start;
           }
         }
-        _results.push((function(func, args, ctor) {
-          ctor.prototype = func.prototype;
-          var child = new ctor, result = func.apply(child, args);
-          return Object(result) === result ? result : child;
-        })(Element, ['p', {}].concat(__slice.call(pieces)), function(){}));
+        _results.push(compiler.elem.apply(compiler, ['p', {}].concat(__slice.call(pieces))));
       }
       return _results;
     })();

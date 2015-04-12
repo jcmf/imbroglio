@@ -10,6 +10,6 @@ You went left!  There isn't much here.
 # To the Right
 
 You went right!  Wow, this is boring.
-You have been here #{@count or= 0; document.createTextNode "#{++@count}"}
-time#{document.createTextNode if @count is 1 then '' else 's'}.
+You have been here #{@count or= 0; ++@count}
+time#{if @count is 1 then '' else 's'}.
 Go [[start<-back]] maybe?
