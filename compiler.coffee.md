@@ -25,7 +25,7 @@ or other block-level elements to insert.
 I'll add more later, but let me see if I can even get that much
 working.
 
-    quote = (s) ->
+    exports.quote = quote = (s) ->
       s = s
       .replace /([\\'])/g, '\\$1'
       .replace /\n/g, '\\n'

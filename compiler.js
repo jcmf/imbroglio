@@ -3,7 +3,7 @@
   var CoffeeScript, Compiler, Element, Scope, assert, compile, nodes, parse, prepare, quote, render,
     __slice = [].slice;
 
-  quote = function(s) {
+  exports.quote = quote = function(s) {
     s = s.replace(/([\\'])/g, '\\$1').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
     return "'" + s + "'";
   };

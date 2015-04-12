@@ -3,6 +3,7 @@ choiceChars = '0123456789abcdefghijklmnopqrstuvwxyz'
 error = (msg) -> throw new Error msg
 assert = require 'assert'
 $ = require 'jquery'
+compiler = require './compiler'
 
 mkText = (s) -> window.document.createTextNode s
 mkElem = (tag, children = [], attrs = {}) ->
@@ -71,8 +72,8 @@ exports.compile = compile = (src) ->
       if not p.length then pp.pop()
       if not pp.length then error "empty passage #{k}, offset #{v.startIndex}"
     return
-  render = (passage, attrs = {}) ->
-    moves = attrs.moves or= ''
+  render = (passage, result = {}) ->
+    moves = result.moves or= ''
     links = {}
     children = do -> for p in passage.pp
       grandchildren = for item in p
@@ -88,13 +89,13 @@ exports.compile = compile = (src) ->
             target: item.target
         gchild
       mkElem 'p', grandchildren
-    attrs.passageElem = mkElem 'div', children, class: 'passage'
-    attrs.choose = (ch) ->
+    result.passageElem = mkElem 'div', children, class: 'passage'
+    result.choose = (ch) ->
       if not link = links[ch]
         console.log "invalid move #{ch} from passage #{passage.name}"
         return null
       render passages[link.target], moves: "#{moves}#{ch}", chosenElem: link.el
-    return attrs
+    return result
   return -> render firstPassage
 
 newGame = turn = null
