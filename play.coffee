@@ -1,9 +1,9 @@
-choiceChars = '0123456789abcdefghijklmnopqrstuvwxyz'
+choiceChars = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
 error = (msg) -> throw new Error msg
 assert = require 'assert'
 $ = require 'jquery'
-compiler = require './compiler'
+{quote, prepare} = require './compiler'
 
 mkText = (s) -> window.document.createTextNode s
 mkElem = (tag, children = [], attrs = {}) ->
@@ -30,71 +30,54 @@ exports.compile = compile = (src) ->
   do ->
     for k, v of passages then do ->
       v.src = src.substring v.startIndex, v.endIndex
-      re = /\[\[([^\]]*)\]\]|(\n\n)/g
-      index = 0
-      v.pp = pp = [p = []]
-      linkCount = 0
-      while m = re.exec v.src then do ->
-        if m.index != index
-          p.push
-            text: v.src.substring index, m.index
-            startIndex: v.startIndex + index
-            endIndex: v.startIndex + m.index
-        index = re.lastIndex
-        if m[2]
-          pp.push p = []
-          return  # continue while loop
-        text = target = link = m[1]
-        offset = v.startIndex + m.index
-        if linkCount >= choiceChars.length
-          error "too many links at [[#{link}]], passage #{k}, offset #{offset}"
-        if lm = /^(.*)->\s*([^<>]*[^\s<>])\s*$/.exec link
-          text = lm[1]
-          target = lm[2]
-        else if lm = /^\s*([^<>]*[^\s<>])\s*<-(.*)$/.exec link
-          target = lm[1]
-          text = lm[2]
+      v.mungedSrc = v.src.replace /\[\[([^\]]*)\]\]/g, (outer, inner, index) ->
+        offset = index + v.startIndex
+        text = target = inner
+        if m = /^(.*)->\s*([^<>]*[^\s<>])\s*$/.exec inner
+          text = m[1]
+          target = m[2]
+        else if m = /^\s*([^<>]*[^\s<>])\s*<-(.*)$/.exec inner
+          target = m[1]
+          text = m[2]
         if target not of passages
-          error "bad link target '#{target}' at [[#{link}]], passage #{k}, offset #{offset}"
-        p.push {
-          text
-          target
-          choiceChar: choiceChars[linkCount++]
-          startIndex: v.startIndex + m.index
-          endIndex: v.startIndex + index
-        }
-        return
-      if index != v.src.length
-        p.push
-          text: v.src.substring index
-          startIndex: v.startIndex + index
-          endIndex: v.startIndex + v.src.length
-      if not p.length then pp.pop()
-      if not pp.length then error "empty passage #{k}, offset #{v.startIndex}"
+          error "bad link target '#{target}' at #{outer}, passage #{k}, offset #{offset}"
+        "#\{_imbroglio.mkLink #{quote target}, #{quote text}}"
+      v.prepared = prepare v.mungedSrc, {
+        argNames: ['_imbroglio']
+        thisVar: '_imbroglio.state'
+        handleError: (e) ->
+          console.log e
+          if e.error instanceof Error then throw e.error
+          else if e.error then error e.error
+          else error e
+      }
+      return
     return
   render = (passage, result = {}) ->
     moves = result.moves or= ''
     links = {}
-    children = do -> for p in passage.pp
-      grandchildren = for item in p
-        gchild = mkText item.text
-        if item.target
-          gchild = mkElem 'a', [gchild],
-            href: "#!#{moves}#{item.choiceChar}"
-            class: 'choice'
-          assert item.choiceChar
-          assert not links[item.choiceChar]
-          links[item.choiceChar] =
-            el: gchild
-            target: item.target
-        gchild
-      mkElem 'p', grandchildren
-    result.passageElem = mkElem 'div', children, class: 'passage'
+    linkCount = 0
+    mkLink = (target, text) ->
+      if linkCount >= choiceChars.length
+        error "too many links, passage #{passage.name}, target [#{target}], text [#{text}]"
+      choiceChar = choiceChars[linkCount++]
+      el = mkElem 'a', [mkText text],
+        class: 'choice'
+        href: "#!#{moves}#{choiceChar}"
+      links[choiceChar] = {el, target}
+      return el
+    state = JSON.parse result.stateJSON or '{}'
+    result.passageElem = passage.prepared _imbroglio = {mkLink, state}
+    stateJSON = result.stateJSON = JSON.stringify state
     result.choose = (ch) ->
       if not link = links[ch]
         console.log "invalid move #{ch} from passage #{passage.name}"
         return null
-      render passages[link.target], moves: "#{moves}#{ch}", chosenElem: link.el
+      return render passages[link.target], {
+        moves: "#{moves}#{ch}"
+        chosenElem: link.el
+        stateJSON
+      }
     return result
   return -> render firstPassage
 
