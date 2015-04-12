@@ -237,7 +237,7 @@
     $('#game').show();
     $('#loading').hide();
     $p = $(turn.passageElem);
-    window.scrollTo(0, $p.offset().top - $p.css('margin-top'));
+    window.scrollTo(0, $p.offset().top);
   };
 
   hashchange = function() {
