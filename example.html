@@ -17633,20 +17633,20 @@ return jQuery;
     $('.pane').hide();
     $('#game').hide();
     $output = $('#output');
+    last = function() {
+      var children;
+      children = $output.children();
+      if (children.length) {
+        return $(children.get(children.length - 1));
+      } else {
+        return children;
+      }
+    };
     if (!turn) {
       turn = newGame();
       $output.empty();
       $output.append(turn.passageElem);
     } else {
-      last = function() {
-        var children;
-        children = $output.children();
-        if (children.length) {
-          return $(children.get(children.length - 1));
-        } else {
-          return children;
-        }
-      };
       while (turn.moves !== moves.slice(0, turn.moves.length)) {
         last().remove();
         turn = turn.prevTurn;
@@ -17666,6 +17666,8 @@ return jQuery;
       $(turn.chosenElem).addClass('chosen');
       $output.append(turn.passageElem);
     }
+    $output.children().removeClass('current');
+    last().addClass('current');
     $('#game').show();
     $('#loading').hide();
     $p = $(turn.passageElem);
@@ -17717,6 +17719,12 @@ return jQuery;
 },{"./compiler":1,"assert":14,"jquery":22}]},{},[2]);
 </script><style>body {
   padding: 0.5em;
+}
+.current {
+  background-color: #ffd;
+}
+.chosen {
+  background-color: #dfd;
 }
 </style></head><body><div id="loading"><p>loading loading OMG still loading is it done yet nope loading
 wow so either the gme got really slow or something went

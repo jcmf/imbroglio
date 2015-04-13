@@ -146,20 +146,20 @@
     $('.pane').hide();
     $('#game').hide();
     $output = $('#output');
+    last = function() {
+      var children;
+      children = $output.children();
+      if (children.length) {
+        return $(children.get(children.length - 1));
+      } else {
+        return children;
+      }
+    };
     if (!turn) {
       turn = newGame();
       $output.empty();
       $output.append(turn.passageElem);
     } else {
-      last = function() {
-        var children;
-        children = $output.children();
-        if (children.length) {
-          return $(children.get(children.length - 1));
-        } else {
-          return children;
-        }
-      };
       while (turn.moves !== moves.slice(0, turn.moves.length)) {
         last().remove();
         turn = turn.prevTurn;
@@ -179,6 +179,8 @@
       $(turn.chosenElem).addClass('chosen');
       $output.append(turn.passageElem);
     }
+    $output.children().removeClass('current');
+    last().addClass('current');
     $('#game').show();
     $('#loading').hide();
     $p = $(turn.passageElem);

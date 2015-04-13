@@ -88,14 +88,14 @@ restore = (moves) ->
   $('.pane').hide()
   $('#game').hide()
   $output = $('#output')
+  last = ->
+    children = $output.children()
+    if children.length then $ children.get children.length-1 else children
   if not turn
     turn = newGame()
     $output.empty()
     $output.append turn.passageElem
   else
-    last = ->
-      children = $output.children()
-      if children.length then $ children.get children.length-1 else children
     while turn.moves != moves[...turn.moves.length]
       last().remove()
       turn = turn.prevTurn
@@ -109,6 +109,8 @@ restore = (moves) ->
     turn.prevTurn = prevTurn
     $(turn.chosenElem).addClass 'chosen'
     $output.append turn.passageElem
+  $output.children().removeClass 'current'
+  last().addClass 'current'
   $('#game').show()
   $('#loading').hide()
   $p = $ turn.passageElem
