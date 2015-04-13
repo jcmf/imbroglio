@@ -14,7 +14,7 @@
 
   _ref = require('./compiler'), quote = _ref.quote, stdlib = _ref.stdlib, prepare = _ref.prepare;
 
-  elem = stdlib.elem;
+  elem = stdlib().elem;
 
   normalize = function(s) {
     return s.replace(/^\s+/, '').replace(/\s+$/, '').replace(/\s+/, ' ');

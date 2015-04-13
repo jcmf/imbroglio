@@ -4,7 +4,7 @@ error = (msg) -> throw new Error msg
 assert = require 'assert'
 $ = require 'jquery'
 {quote, stdlib, prepare} = require './compiler'
-{elem} = stdlib
+{elem} = stdlib()
 
 normalize = (s) ->
   s
