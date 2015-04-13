@@ -4,7 +4,7 @@
   "description": "a tool for making browser-based interactive fiction",
   "main": "index.js",
   "scripts": {
-    "prepublish": "iced -c *.coffee* && gribbl *.jade"
+    "prepublish": "iced -c *.coffee* && ./test.sh && gribbl *.jade"
   },
   "browserify": {
     "transform": [

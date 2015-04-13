@@ -54,15 +54,11 @@ working.
     {Scope} = require 'coffee-script/lib/coffee-script/scope'
     nodes = require 'coffee-script/lib/coffee-script/nodes'
 
-    class Element # XXX remove
-      constructor: (@tag, @attrs = {}, @children...) ->
-
     class Compiler
       constructor: (@opts) ->
         @referencedVars = []
         @scope = new Scope null, null, null, @referencedVars  # XXX remove
       refTokens: (tokens) ->
-        assert not @tmpUsed
         for token in tokens
           if token.variable
             @referencedVars.push token[1]
@@ -84,9 +80,6 @@ working.
       wrap: (ast) ->
         if not @opts.thisVar then return ast
         @blockret @call(@field(new nodes.Parens(@block [new nodes.Code([], ast)]), 'call'), @litval @opts.thisVar)
-      tmp: (name) -> # XXX remove
-        @tmpUsed = yes
-        @lit @scope.freeVariable name
       text: (s) -> @string s
       obj: (obj) ->
         attrs = for k, v of obj
@@ -95,9 +88,6 @@ working.
         @val new nodes.Obj attrs
       elem: (tag, attrs = {}, children...) ->
         @callname 'imbroglio.elem', @string(tag), @obj(attrs), children...
-      expand: (child) -> # XXX remove
-        if child not instanceof Element then return child
-        @elem child.tag, child.attrs, child.children...
       main: (result) ->
         @scope.expressions = @wrap @blockret result
         return scope: @scope, ast: @scope.expressions, level: 1, indent: ''

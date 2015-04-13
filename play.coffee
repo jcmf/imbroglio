@@ -4,13 +4,13 @@ error = (msg) -> throw new Error msg
 assert = require 'assert'
 $ = require 'jquery'
 {quote, stdlib, prepare} = require './compiler'
+{elem} = stdlib
 
-mkText = (s) -> window.document.createTextNode s
-mkElem = (tag, children = [], attrs = {}) ->
-  result = window.document.createElement tag
-  result.setAttribute k, v for k, v of attrs
-  result.appendChild child for child in children when child
-  result
+normalize = (s) ->
+  s
+  .replace /^\s+/, ''
+  .replace /\s+$/, ''
+  .replace /\s+/, ' '
 
 exports.compile = compile = (src) ->
   passages = {}
@@ -20,7 +20,7 @@ exports.compile = compile = (src) ->
     lastPassage = null
     while m = re.exec src
       if lastPassage then lastPassage.endIndex = m.index
-      lastPassage = name: m[1], startIndex: re.lastIndex
+      lastPassage = name: normalize(m[1]), startIndex: re.lastIndex
       assert lastPassage.name not of passages, lastPassage.name
       passages[lastPassage.name] = lastPassage
       firstPassage or= lastPassage
@@ -39,6 +39,7 @@ exports.compile = compile = (src) ->
         else if m = /^\s*([^<>]*[^\s<>])\s*<-(.*)$/.exec inner
           target = m[1]
           text = m[2]
+        target = normalize target
         if target not of passages
           error "bad link target '#{target}' at #{outer}, passage #{k}, offset #{offset}"
         "#\{imbroglio.mkLink #{quote target}, #{quote text}}"
@@ -61,9 +62,7 @@ exports.compile = compile = (src) ->
       if linkCount >= choiceChars.length
         error "too many links, passage #{passage.name}, target [#{target}], text [#{text}]"
       choiceChar = choiceChars[linkCount++]
-      el = mkElem 'a', [mkText text],
-        class: 'choice'
-        href: "#!#{moves}#{choiceChar}"
+      el = elem 'a', {class: 'choice', href: "#!#{moves}#{choiceChar}"}, text
       links[choiceChar] = {el, target}
       return el
     state = JSON.parse result.stateJSON or '{}'
