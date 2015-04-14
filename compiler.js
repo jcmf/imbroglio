@@ -8,24 +8,10 @@
     return "'" + s + "'";
   };
 
-  exports.stdlib = function(imbroglio, opts) {
-    var textify;
+  exports.stdlib = function(imbroglio) {
     if (imbroglio == null) {
       imbroglio = {};
     }
-    if (opts == null) {
-      opts = {};
-    }
-    textify = function(s) {
-      s;
-      if (opts.smartQuotes) {
-        s = s.replace(/(\s)"/g, '$1\u201c').replace(/^"(\w)/g, '\u201c$2').replace('"', '\u201d').replace(/(\s)'/g, '$1\u2018').replace(/^'(\w)/g, '\u2018$1').replace("'", '\u2019');
-      }
-      if (opts.smartPunct) {
-        s = s.replace(/\s+--\s+/g, '\u2009\u2014\u2009').replace(/--\s+/g, '\u2014\u2009').replace(/\s+--/g, '\u2009\u2014').replace(/--/g, '\u2014').replace(/\.{3}/g, '\u2026');
-      }
-      return s;
-    };
     imbroglio.elem || (imbroglio.elem = function() {
       var addChild, attrs, child, children, k, result, tag, v, _i, _len;
       tag = arguments[0], attrs = arguments[1], children = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
@@ -50,7 +36,14 @@
           return;
         }
         if (!child.cloneNode) {
-          child = window.document.createTextNode(textify("" + child));
+          child = "" + child;
+          if (this.smartQuotes) {
+            child = child.replace(/(\s)"/g, '$1\u201c').replace(/^"(\w)/g, '\u201c$2').replace('"', '\u201d').replace(/(\s)'/g, '$1\u2018').replace(/^'(\w)/g, '\u2018$1').replace("'", '\u2019');
+          }
+          if (this.smartPunct) {
+            child = child.replace(/\s+--\s+/g, '\u2009\u2014\u2009').replace(/--\s+/g, '\u2014\u2009').replace(/\s+--/g, '\u2009\u2014').replace(/--/g, '\u2014').replace(/\.{3}/g, '\u2026');
+          }
+          child = window.document.createTextNode(child);
         }
         result.appendChild(child);
       };
