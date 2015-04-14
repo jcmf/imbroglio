@@ -55,6 +55,8 @@ exports.compile = compile = (src) ->
       return
     return
   render = (passage, result = {}) ->
+    state = result.state or {}
+    delete result.state
     moves = result.moves or= ''
     links = {}
     linkCount = 0
@@ -65,17 +67,15 @@ exports.compile = compile = (src) ->
       el = elem 'a', {class: 'choice', href: "#!#{moves}#{choiceChar}"}, text
       links[choiceChar] = {el, target}
       return el
-    state = JSON.parse result.stateJSON or '{}'
     result.passageElem = passage.prepared stdlib {mkLink, state}
-    stateJSON = result.stateJSON = JSON.stringify state
     result.choose = (ch) ->
       if not link = links[ch]
         console.log "invalid move #{ch} from passage #{passage.name}"
         return null
+      $(link.el).addClass 'chosen'
       return render passages[link.target], {
         moves: "#{moves}#{ch}"
-        chosenElem: link.el
-        stateJSON
+        state
       }
     return result
   return -> render firstPassage
@@ -91,15 +91,10 @@ restore = (moves) ->
   last = ->
     children = $output.children()
     if children.length then $ children.get children.length-1 else children
-  if not turn
+  if not turn or turn.moves != moves[...turn.moves.length]
     turn = newGame()
     $output.empty()
     $output.append turn.passageElem
-  else
-    while turn.moves != moves[...turn.moves.length]
-      last().remove()
-      turn = turn.prevTurn
-    last().find('.chosen').removeClass 'chosen'
   for ch in moves[turn.moves.length...]
     prevTurn = turn
     if not turn = turn.choose ch
@@ -107,7 +102,6 @@ restore = (moves) ->
       $('#loading').hide()
       return
     turn.prevTurn = prevTurn
-    $(turn.chosenElem).addClass 'chosen'
     $output.append turn.passageElem
   $output.children().removeClass 'current'
   last().addClass 'current'

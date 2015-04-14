@@ -87,10 +87,12 @@
       }
     })();
     render = function(passage, result) {
-      var linkCount, links, mkLink, moves, state, stateJSON;
+      var linkCount, links, mkLink, moves, state;
       if (result == null) {
         result = {};
       }
+      state = result.state || {};
+      delete result.state;
       moves = result.moves || (result.moves = '');
       links = {};
       linkCount = 0;
@@ -110,22 +112,20 @@
         };
         return el;
       };
-      state = JSON.parse(result.stateJSON || '{}');
       result.passageElem = passage.prepared(stdlib({
         mkLink: mkLink,
         state: state
       }));
-      stateJSON = result.stateJSON = JSON.stringify(state);
       result.choose = function(ch) {
         var link;
         if (!(link = links[ch])) {
           console.log("invalid move " + ch + " from passage " + passage.name);
           return null;
         }
+        $(link.el).addClass('chosen');
         return render(passages[link.target], {
           moves: "" + moves + ch,
-          chosenElem: link.el,
-          stateJSON: stateJSON
+          state: state
         });
       };
       return result;
@@ -155,16 +155,10 @@
         return children;
       }
     };
-    if (!turn) {
+    if (!turn || turn.moves !== moves.slice(0, turn.moves.length)) {
       turn = newGame();
       $output.empty();
       $output.append(turn.passageElem);
-    } else {
-      while (turn.moves !== moves.slice(0, turn.moves.length)) {
-        last().remove();
-        turn = turn.prevTurn;
-      }
-      last().find('.chosen').removeClass('chosen');
     }
     _ref1 = moves.slice(turn.moves.length);
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -176,7 +170,6 @@
         return;
       }
       turn.prevTurn = prevTurn;
-      $(turn.chosenElem).addClass('chosen');
       $output.append(turn.passageElem);
     }
     $output.children().removeClass('current');
