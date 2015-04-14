@@ -17520,7 +17520,7 @@ return jQuery;
     firstPassage = null;
     (function() {
       var lastPassage, m, re;
-      re = /(?:^\s*\n?|\n\n)#\s*([^\n]*\S)\s*\n/g;
+      re = /(?:^\s*\n?|\n\n)#(?!\{)\s*([^\n]*\S)\s*\n/g;
       lastPassage = null;
       while (m = re.exec(src)) {
         if (lastPassage) {

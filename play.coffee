@@ -16,7 +16,7 @@ exports.compile = compile = (src) ->
   passages = {}
   firstPassage = null
   do ->
-    re = /(?:^\s*\n?|\n\n)#\s*([^\n]*\S)\s*\n/g
+    re = /(?:^\s*\n?|\n\n)#(?!\{)\s*([^\n]*\S)\s*\n/g
     lastPassage = null
     while m = re.exec src
       if lastPassage then lastPassage.endIndex = m.index
