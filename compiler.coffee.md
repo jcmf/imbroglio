@@ -32,7 +32,25 @@ working.
       .replace /\r/g, '\\r'
       return "'#{s}'"
 
-    exports.stdlib = (imbroglio = {}) ->
+    exports.stdlib = (imbroglio = {}, opts = {}) ->
+      textify = (s) ->
+        s
+        if opts.smartQuotes
+          s = s
+          .replace /(\s)"/g, '$1\u201c' # ldquo
+          .replace /^"(\w)/g, '\u201c$2' # ldquo
+          .replace '"', '\u201d' # rdquo
+          .replace /(\s)'/g, '$1\u2018' # lsquo
+          .replace /^'(\w)/g, '\u2018$1' # lsquo
+          .replace "'", '\u2019' # rsquo
+        if opts.smartPunct
+          s = s
+          .replace /\s+--\s+/g, '\u2009\u2014\u2009' # thinsp mdash thinsp
+          .replace /--\s+/g, '\u2014\u2009' # mdash thinsp
+          .replace /\s+--/g, '\u2009\u2014' # thinsp mdash
+          .replace /--/g, '\u2014' # mdash
+          .replace /\.{3}/g, '\u2026' # hellip
+        return s
       imbroglio.elem or= (tag, attrs = {}, children...) ->
         result = window.document.createElement tag
         result.setAttribute k, v for k, v of attrs
@@ -42,7 +60,7 @@ working.
             addChild c for c in child
             return
           if not child.cloneNode
-            child = window.document.createTextNode "#{child}"
+            child = window.document.createTextNode textify "#{child}"
           result.appendChild child
           return
         addChild child for child in children
