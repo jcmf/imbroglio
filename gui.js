@@ -17,9 +17,11 @@
       src = $textarea.val();
       opts = {
         argNames: ['arg'],
-        thisVar: $thisVar.val(),
+        thisVar: 'imbroglio.state',
         vars: {
-          imbroglio: stdlib()
+          imbroglio: stdlib({
+            state: {}
+          })
         }
       };
       $('#ast').text(parse(src, opts).ast);

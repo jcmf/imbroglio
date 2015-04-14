@@ -36,22 +36,22 @@ working.
       imbroglio.elem or= (tag, attrs = {}, children...) ->
         result = window.document.createElement tag
         result.setAttribute k, v for k, v of attrs
-        addChild = (child) ->
+        addChild = (child) =>
           if not child? or child is '' then return
           if child instanceof Array
             addChild c for c in child
             return
           if not child.cloneNode
             child = "#{child}"
-            if @smartQuotes
+            if @state?.smartQuotes
               child = child
               .replace /(\s)"/g, '$1\u201c' # ldquo
-              .replace /^"(\w)/g, '\u201c$2' # ldquo
+              .replace /^"(\w)/g, '\u201c$1' # ldquo
               .replace '"', '\u201d' # rdquo
               .replace /(\s)'/g, '$1\u2018' # lsquo
               .replace /^'(\w)/g, '\u2018$1' # lsquo
               .replace "'", '\u2019' # rsquo
-            if @smartPunct
+            if @state?.smartPunct
               child = child
               .replace /\s+--\s+/g, '\u2009\u2014\u2009' # thinsp mdash thinsp
               .replace /--\s+/g, '\u2014\u2009' # mdash thinsp

@@ -24,30 +24,32 @@
         v = attrs[k];
         result.setAttribute(k, v);
       }
-      addChild = function(child) {
-        var c, _i, _len;
-        if ((child == null) || child === '') {
-          return;
-        }
-        if (child instanceof Array) {
-          for (_i = 0, _len = child.length; _i < _len; _i++) {
-            c = child[_i];
-            addChild(c);
+      addChild = (function(_this) {
+        return function(child) {
+          var c, _i, _len, _ref, _ref1;
+          if ((child == null) || child === '') {
+            return;
           }
-          return;
-        }
-        if (!child.cloneNode) {
-          child = "" + child;
-          if (this.smartQuotes) {
-            child = child.replace(/(\s)"/g, '$1\u201c').replace(/^"(\w)/g, '\u201c$2').replace('"', '\u201d').replace(/(\s)'/g, '$1\u2018').replace(/^'(\w)/g, '\u2018$1').replace("'", '\u2019');
+          if (child instanceof Array) {
+            for (_i = 0, _len = child.length; _i < _len; _i++) {
+              c = child[_i];
+              addChild(c);
+            }
+            return;
           }
-          if (this.smartPunct) {
-            child = child.replace(/\s+--\s+/g, '\u2009\u2014\u2009').replace(/--\s+/g, '\u2014\u2009').replace(/\s+--/g, '\u2009\u2014').replace(/--/g, '\u2014').replace(/\.{3}/g, '\u2026');
+          if (!child.cloneNode) {
+            child = "" + child;
+            if ((_ref = _this.state) != null ? _ref.smartQuotes : void 0) {
+              child = child.replace(/(\s)"/g, '$1\u201c').replace(/^"(\w)/g, '\u201c$1').replace('"', '\u201d').replace(/(\s)'/g, '$1\u2018').replace(/^'(\w)/g, '\u2018$1').replace("'", '\u2019');
+            }
+            if ((_ref1 = _this.state) != null ? _ref1.smartPunct : void 0) {
+              child = child.replace(/\s+--\s+/g, '\u2009\u2014\u2009').replace(/--\s+/g, '\u2014\u2009').replace(/\s+--/g, '\u2009\u2014').replace(/--/g, '\u2014').replace(/\.{3}/g, '\u2026');
+            }
+            child = window.document.createTextNode(child);
           }
-          child = window.document.createTextNode(child);
-        }
-        result.appendChild(child);
-      };
+          result.appendChild(child);
+        };
+      })(this);
       for (_i = 0, _len = children.length; _i < _len; _i++) {
         child = children[_i];
         addChild(child);
@@ -331,9 +333,11 @@
       src = $textarea.val();
       opts = {
         argNames: ['arg'],
-        thisVar: $thisVar.val(),
+        thisVar: 'imbroglio.state',
         vars: {
-          imbroglio: stdlib()
+          imbroglio: stdlib({
+            state: {}
+          })
         }
       };
       $('#ast').text(parse(src, opts).ast);
@@ -17517,4 +17521,4 @@ return jQuery;
 .error {
   color: #f00;
 }
-</style></head><body><pre id="ast"></pre><pre id="code"></pre><div id="content"></div><textarea id="textarea"></textarea><input id="thisVar" type="text"></body></html>
+</style></head><body><pre id="ast"></pre><pre id="code"></pre><div id="content"></div><textarea id="textarea"></textarea></body></html>

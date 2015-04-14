@@ -14,8 +14,8 @@ Meh, sure, I guess we can do that somehow probably.
         src = $textarea.val()
         opts =
           argNames: ['arg']
-          thisVar: $thisVar.val()
-          vars: imbroglio: stdlib()
+          thisVar: 'imbroglio.state'
+          vars: imbroglio: stdlib state: {}
         $('#ast').text parse(src, opts).ast
         $code.text compile src, opts
         opts.handleError = (e) -> console.log e
