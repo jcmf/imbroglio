@@ -1,6 +1,5 @@
 choiceChars = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
-error = (msg) -> throw new Error msg
 assert = require 'assert'
 $ = require 'jquery'
 {quote, stdlib, prepare} = require './compiler'
@@ -12,7 +11,8 @@ normalize = (s) ->
   .replace /\s+$/, ''
   .replace /\s+/, ' '
 
-exports.compile = compile = (src) ->
+exports.compile = compile = (src, opts = {}) ->
+  handleError = opts.handleError or (msg) -> console.log msg
   passages = {}
   firstPassage = null
   do ->
@@ -24,7 +24,7 @@ exports.compile = compile = (src) ->
       assert lastPassage.name not of passages, lastPassage.name
       passages[lastPassage.name] = lastPassage
       firstPassage or= lastPassage
-    if not lastPassage then error 'no passages found'
+    if not lastPassage then handleError 'no passages found'
     lastPassage.endIndex = src.length
     return
   do ->
@@ -41,7 +41,7 @@ exports.compile = compile = (src) ->
           text = m[2]
         target = normalize target
         if target not of passages
-          error "bad link target '#{target}' at #{outer}, passage #{k}, offset #{offset}"
+          handleError "bad link target '#{target}' at #{outer}, passage '#{k}', offset #{offset}"
         "#\{imbroglio.mkLink #{quote target}, #{quote text}}"
       v.prepared = prepare v.mungedSrc, {
         argNames: ['imbroglio']
@@ -49,8 +49,8 @@ exports.compile = compile = (src) ->
         handleError: (e) ->
           console.log e
           if e.error instanceof Error then throw e.error
-          else if e.error then error e.error
-          else error e
+          else if e.error then throw new Error e.error
+          else throw new Error e
       }
       return
     return
@@ -61,8 +61,10 @@ exports.compile = compile = (src) ->
     links = {}
     linkCount = 0
     mkLink = (target, text) ->
-      if linkCount >= choiceChars.length
-        error "too many links, passage #{passage.name}, target [#{target}], text [#{text}]"
+      if target not of passages
+        return elem 'span', {class: 'error'}, "ERROR: bad link target '#{target}' in passage '#{passage.name}': #{text}"
+      else if linkCount >= choiceChars.length
+        return elem 'span', {class: 'error'}, "ERROR: too many links, passage '#{passage.name}', target '#{target}': #{text}"
       choiceChar = choiceChars[linkCount++]
       el = elem 'a', {class: 'choice', href: "#!#{moves}#{choiceChar}"}, text
       links[choiceChar] = {el, target}
