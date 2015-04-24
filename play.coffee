@@ -117,8 +117,9 @@ hashchange = ->
   hash = window.location.hash.replace /^#/, ''
   if m = /^!(.*)$/.exec hash then return restore m[1]
   turn = target = null
-  if m = /^\/([a-z][a-z-]*)$/.exec hash then target = $ "##{m[1]}-pane"
-  if not target?.length then target = $('#home')
+  if not hash then target = $ '#home'
+  else if m = /^\/([a-z][a-z-]*)$/.exec hash then target = $ "##{m[1]}-pane"
+  if not target?.length then target = $ '#404-pane'
   $('#game').hide()
   $('#output').empty()
   $('.pane').hide()

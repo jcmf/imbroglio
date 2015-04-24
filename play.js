@@ -195,11 +195,13 @@
       return restore(m[1]);
     }
     turn = target = null;
-    if (m = /^\/([a-z][a-z-]*)$/.exec(hash)) {
+    if (!hash) {
+      target = $('#home');
+    } else if (m = /^\/([a-z][a-z-]*)$/.exec(hash)) {
       target = $("#" + m[1] + "-pane");
     }
     if (!(target != null ? target.length : void 0)) {
-      target = $('#home');
+      target = $('#404-pane');
     }
     $('#game').hide();
     $('#output').empty();
