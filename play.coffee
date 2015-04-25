@@ -133,7 +133,7 @@ exports.start = (src) ->
   $ ->
     do ->
       m = /([^\/]+)$/.exec window.location?.pathname or ''
-      if m then $('a[href="#"], a[href="#/"]').attr 'href', m[1]
+      $('a[href="#"], a[href="#/"]').attr 'href', if m then m[1] else '.'
       return
     $(window).on 'hashchange', (e) ->
       e.preventDefault()

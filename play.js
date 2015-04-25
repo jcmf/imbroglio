@@ -217,9 +217,7 @@
       (function() {
         var m, _ref1;
         m = /([^\/]+)$/.exec(((_ref1 = window.location) != null ? _ref1.pathname : void 0) || '');
-        if (m) {
-          $('a[href="#"], a[href="#/"]').attr('href', m[1]);
-        }
+        $('a[href="#"], a[href="#/"]').attr('href', m ? m[1] : '.');
       })();
       $(window).on('hashchange', function(e) {
         e.preventDefault();
