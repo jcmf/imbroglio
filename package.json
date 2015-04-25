@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/jcmf/imbroglio",
   "devDependencies": {
-    "gribbl": "^1.2.2",
+    "gribbl": "^1.2.3",
     "iced-coffee-script": "^1.8.0-d",
     "jquery": "^2.1.3",
     "stylus": "^0.50.0"
