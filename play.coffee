@@ -110,7 +110,11 @@ restore = (moves) ->
   $('#game').show()
   $('#loading').hide()
   $p = $ turn.passageElem
-  window.scrollTo 0, $p.offset().top
+  $chosen = $('.chosen')
+  scrollPos = if not $chosen.length then 0 else
+    $($chosen.get($chosen.length-1)).offset().top
+  console.log "XXX scrollPos = #{scrollPos}"
+  window.scrollTo 0, scrollPos
   return
 
 hashchange = ->

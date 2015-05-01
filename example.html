@@ -320,7 +320,7 @@
 
   
 
-  src = "#start\n\nThis is the first passage in the game.  From here you could go\n[[left]] or [[right->To the Right]].\n\n#left\n\nYou went left!  There isn't much here.\n\n# To the Right\n\nYou went right!  Wow, this is boring.\nYou have been here #{@count or= 0; ++@count}\ntime#{if @count is 1 then '' else 's'}.\nGo [[start<-back]] maybe?\n";
+  src = "#start\n\nThis is the first passage in the game.  From here you could go\n[[left]] or [[right->To the Right]].\n\n#left\n\nYou went left!  There isn't much here.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel vehicula ipsum. In velit mauris, porta in sapien sed, faucibus imperdiet tellus. Etiam dapibus metus eu erat suscipit, vitae laoreet mi vulputate. Proin suscipit venenatis placerat. Fusce iaculis leo metus, sit amet iaculis dui convallis ac. Proin id augue dignissim, pellentesque quam vitae, cursus quam. Etiam volutpat lobortis nisi. Maecenas ultrices egestas molestie. Aliquam erat volutpat.\n\nCras facilisis vulputate lacus, sit amet elementum ex faucibus sed. Aliquam mollis convallis nibh, eget molestie massa fermentum ut. Morbi porttitor ante ac congue vulputate. Nunc pretium urna urna, ut ultrices est sagittis ullamcorper. Fusce dictum quam ut dapibus commodo. Etiam non tempus dui. Quisque scelerisque magna efficitur consectetur rhoncus. Duis in commodo nibh. Curabitur quis ornare est, id aliquam ipsum. Pellentesque id nunc eu nisi luctus aliquet. Vestibulum mattis porta diam id volutpat. Nullam at orci faucibus urna luctus auctor.\n\nInteger aliquet vel urna eget tempus. Nam a neque pulvinar, ornare lorem eu, mattis dui. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus felis ligula, fermentum sit amet suscipit et, euismod et enim. Aenean fringilla venenatis tellus quis elementum. Integer non semper quam. In eget arcu pretium neque tempus sodales hendrerit vel quam. Donec nulla orci, rhoncus non varius quis, rhoncus eu nisi. Aenean vel vehicula enim. Nunc eu vulputate sapien. Proin id leo a libero blandit auctor vel ac arcu. Nulla efficitur purus id neque sodales congue. Quisque ultricies, mauris ac scelerisque faucibus, velit elit malesuada ipsum, at ultrices nunc urna a massa. Fusce finibus elit ut libero interdum, non mattis magna vehicula. Aliquam congue congue turpis at semper. Vestibulum velit nisi, fermentum a ante congue, sagittis egestas augue.\n\nNullam interdum, lorem ac molestie tempor, tortor tellus eleifend turpis, ut auctor tellus mauris id nunc. Cras viverra elit quam, a interdum enim fermentum ac. Aliquam sollicitudin risus vehicula metus elementum, sed porttitor risus eleifend. Maecenas mattis sem nec sagittis auctor. Proin id maximus arcu. Quisque ex turpis, cursus quis molestie ac, volutpat vitae justo. Duis dignissim mollis felis quis porta. Vestibulum nec feugiat ante.\n\nSed ut nisi ac risus scelerisque consequat sed ac sem. Sed arcu lacus, pellentesque eu erat ac, sodales suscipit mauris. Sed imperdiet sit amet ex vitae scelerisque. Cras vitae fermentum magna, posuere eleifend ante. Sed sagittis nulla ut lacus elementum porttitor. Proin aliquam laoreet purus. Fusce quis felis eu est sodales viverra. Curabitur convallis ac lectus ac posuere.\n\n# To the Right\n\nYou went right!  Wow, this is boring.\nYou have been here #{@count or= 0; ++@count}\ntime#{if @count is 1 then '' else 's'}.\nGo [[start<-back]] maybe?\n";
 
   imbroglio = require('.');
 
@@ -17642,7 +17642,7 @@ return jQuery;
   newGame = turn = null;
 
   restore = function(moves) {
-    var $output, $p, ch, last, prevTurn, _i, _len, _ref1;
+    var $chosen, $output, $p, ch, last, prevTurn, scrollPos, _i, _len, _ref1;
     if ((turn != null ? turn.moves : void 0) === moves) {
       return;
     }
@@ -17681,7 +17681,10 @@ return jQuery;
     $('#game').show();
     $('#loading').hide();
     $p = $(turn.passageElem);
-    window.scrollTo(0, $p.offset().top);
+    $chosen = $('.chosen');
+    scrollPos = !$chosen.length ? 0 : $($chosen.get($chosen.length - 1)).offset().top;
+    console.log("XXX scrollPos = " + scrollPos);
+    window.scrollTo(0, scrollPos);
   };
 
   hashchange = function() {

@@ -146,7 +146,7 @@
   newGame = turn = null;
 
   restore = function(moves) {
-    var $output, $p, ch, last, prevTurn, _i, _len, _ref1;
+    var $chosen, $output, $p, ch, last, prevTurn, scrollPos, _i, _len, _ref1;
     if ((turn != null ? turn.moves : void 0) === moves) {
       return;
     }
@@ -185,7 +185,10 @@
     $('#game').show();
     $('#loading').hide();
     $p = $(turn.passageElem);
-    window.scrollTo(0, $p.offset().top);
+    $chosen = $('.chosen');
+    scrollPos = !$chosen.length ? 0 : $($chosen.get($chosen.length - 1)).offset().top;
+    console.log("XXX scrollPos = " + scrollPos);
+    window.scrollTo(0, scrollPos);
   };
 
   hashchange = function() {
