@@ -200,7 +200,7 @@
     turn = target = null;
     if (!hash) {
       target = $('#home');
-    } else if (m = /^\/([a-z][a-z-]*)$/.exec(hash)) {
+    } else if (m = /^\/([a-z][a-z0-9-]*)$/.exec(hash)) {
       target = $("#" + m[1] + "-pane");
     }
     if (!(target != null ? target.length : void 0)) {

@@ -122,7 +122,7 @@ hashchange = ->
   if m = /^!(.*)$/.exec hash then return restore m[1]
   turn = target = null
   if not hash then target = $ '#home'
-  else if m = /^\/([a-z][a-z-]*)$/.exec hash then target = $ "##{m[1]}-pane"
+  else if m = /^\/([a-z][a-z0-9-]*)$/.exec hash then target = $ "##{m[1]}-pane"
   if not target?.length then target = $ '#404-pane'
   $('#game').hide()
   $('#output').empty()
